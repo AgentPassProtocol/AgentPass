@@ -5,6 +5,8 @@ import { TerminalHeader } from "@/components/TerminalHeader";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { generateApiKey, generateHandle, tierForScore } from "@/lib/agent-utils";
+import { exportPassportBundle } from "@/lib/passport-export.functions";
+import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/console")({
@@ -39,6 +41,35 @@ function ConsolePage() {
   const [model, setModel] = useState("gpt-5.2");
   const [purpose, setPurpose] = useState("");
   const [busy, setBusy] = useState(false);
+  const [exportingId, setExportingId] = useState<string | null>(null);
+  const exportFn = useServerFn(exportPassportBundle);
+
+  async function handleExport(agent: Agent) {
+    setExportingId(agent.id);
+    try {
+      const { bundle } = await exportFn({ data: { agentId: agent.id } });
+      const json = JSON.stringify(bundle, null, 2);
+      const blob = new Blob([json], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `passport-${agent.handle}.json`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      try {
+        await navigator.clipboard.writeText(json);
+        toast.success(`Bundle exported · ${agent.handle} (also copied)`);
+      } catch {
+        toast.success(`Bundle exported · ${agent.handle}`);
+      }
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Export failed");
+    } finally {
+      setExportingId(null);
+    }
+  }
 
   useEffect(() => {
     if (!loading && !user) navigate({ to: "/auth" });
@@ -217,10 +248,19 @@ function ConsolePage() {
                     <div className="mt-4 border-t border-border pt-3 text-[10px] text-muted-foreground">
                       key: <span className="text-terminal">{a.api_key_prefix}...</span>
                     </div>
-                    <div className="mt-3 flex gap-2">
-                      <Link to="/agent/$handle" params={{ handle: a.handle }} className="flex-1">
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <Link to="/agent/$handle" params={{ handle: a.handle }} className="flex-1 min-w-[80px]">
                         <Button variant="outline" size="sm" className="w-full">VIEW</Button>
                       </Link>
+                      <Button
+                        variant="amber"
+                        size="sm"
+                        disabled={exportingId === a.id}
+                        onClick={() => handleExport(a)}
+                        title="Export signed passport bundle (JSON)"
+                      >
+                        {exportingId === a.id ? "SIGNING..." : "EXPORT"}
+                      </Button>
                       <Button variant="ghost" size="sm" onClick={() => deleteAgent(a.id, a.handle)} className="text-destructive hover:text-destructive">REVOKE</Button>
                     </div>
                   </div>
