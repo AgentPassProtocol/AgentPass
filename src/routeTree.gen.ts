@@ -9,38 +9,181 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as RegistryRouteImport } from './routes/registry'
+import { Route as ProtocolRouteImport } from './routes/protocol'
+import { Route as ConsoleRouteImport } from './routes/console'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as ApiDocsRouteImport } from './routes/api-docs'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AgentHandleRouteImport } from './routes/agent.$handle'
+import { Route as ApiPublicV1RegistryRouteImport } from './routes/api.public.v1.registry'
+import { Route as ApiPublicV1VerifyHandleRouteImport } from './routes/api.public.v1.verify.$handle'
 
+const RegistryRoute = RegistryRouteImport.update({
+  id: '/registry',
+  path: '/registry',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProtocolRoute = ProtocolRouteImport.update({
+  id: '/protocol',
+  path: '/protocol',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConsoleRoute = ConsoleRouteImport.update({
+  id: '/console',
+  path: '/console',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiDocsRoute = ApiDocsRouteImport.update({
+  id: '/api-docs',
+  path: '/api-docs',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AgentHandleRoute = AgentHandleRouteImport.update({
+  id: '/agent/$handle',
+  path: '/agent/$handle',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicV1RegistryRoute = ApiPublicV1RegistryRouteImport.update({
+  id: '/api/public/v1/registry',
+  path: '/api/public/v1/registry',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicV1VerifyHandleRoute = ApiPublicV1VerifyHandleRouteImport.update({
+  id: '/api/public/v1/verify/$handle',
+  path: '/api/public/v1/verify/$handle',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/api-docs': typeof ApiDocsRoute
+  '/auth': typeof AuthRoute
+  '/console': typeof ConsoleRoute
+  '/protocol': typeof ProtocolRoute
+  '/registry': typeof RegistryRoute
+  '/agent/$handle': typeof AgentHandleRoute
+  '/api/public/v1/registry': typeof ApiPublicV1RegistryRoute
+  '/api/public/v1/verify/$handle': typeof ApiPublicV1VerifyHandleRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/api-docs': typeof ApiDocsRoute
+  '/auth': typeof AuthRoute
+  '/console': typeof ConsoleRoute
+  '/protocol': typeof ProtocolRoute
+  '/registry': typeof RegistryRoute
+  '/agent/$handle': typeof AgentHandleRoute
+  '/api/public/v1/registry': typeof ApiPublicV1RegistryRoute
+  '/api/public/v1/verify/$handle': typeof ApiPublicV1VerifyHandleRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/api-docs': typeof ApiDocsRoute
+  '/auth': typeof AuthRoute
+  '/console': typeof ConsoleRoute
+  '/protocol': typeof ProtocolRoute
+  '/registry': typeof RegistryRoute
+  '/agent/$handle': typeof AgentHandleRoute
+  '/api/public/v1/registry': typeof ApiPublicV1RegistryRoute
+  '/api/public/v1/verify/$handle': typeof ApiPublicV1VerifyHandleRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/api-docs'
+    | '/auth'
+    | '/console'
+    | '/protocol'
+    | '/registry'
+    | '/agent/$handle'
+    | '/api/public/v1/registry'
+    | '/api/public/v1/verify/$handle'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/api-docs'
+    | '/auth'
+    | '/console'
+    | '/protocol'
+    | '/registry'
+    | '/agent/$handle'
+    | '/api/public/v1/registry'
+    | '/api/public/v1/verify/$handle'
+  id:
+    | '__root__'
+    | '/'
+    | '/api-docs'
+    | '/auth'
+    | '/console'
+    | '/protocol'
+    | '/registry'
+    | '/agent/$handle'
+    | '/api/public/v1/registry'
+    | '/api/public/v1/verify/$handle'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ApiDocsRoute: typeof ApiDocsRoute
+  AuthRoute: typeof AuthRoute
+  ConsoleRoute: typeof ConsoleRoute
+  ProtocolRoute: typeof ProtocolRoute
+  RegistryRoute: typeof RegistryRoute
+  AgentHandleRoute: typeof AgentHandleRoute
+  ApiPublicV1RegistryRoute: typeof ApiPublicV1RegistryRoute
+  ApiPublicV1VerifyHandleRoute: typeof ApiPublicV1VerifyHandleRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/registry': {
+      id: '/registry'
+      path: '/registry'
+      fullPath: '/registry'
+      preLoaderRoute: typeof RegistryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/protocol': {
+      id: '/protocol'
+      path: '/protocol'
+      fullPath: '/protocol'
+      preLoaderRoute: typeof ProtocolRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/console': {
+      id: '/console'
+      path: '/console'
+      fullPath: '/console'
+      preLoaderRoute: typeof ConsoleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api-docs': {
+      id: '/api-docs'
+      path: '/api-docs'
+      fullPath: '/api-docs'
+      preLoaderRoute: typeof ApiDocsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +191,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/agent/$handle': {
+      id: '/agent/$handle'
+      path: '/agent/$handle'
+      fullPath: '/agent/$handle'
+      preLoaderRoute: typeof AgentHandleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/v1/registry': {
+      id: '/api/public/v1/registry'
+      path: '/api/public/v1/registry'
+      fullPath: '/api/public/v1/registry'
+      preLoaderRoute: typeof ApiPublicV1RegistryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/v1/verify/$handle': {
+      id: '/api/public/v1/verify/$handle'
+      path: '/api/public/v1/verify/$handle'
+      fullPath: '/api/public/v1/verify/$handle'
+      preLoaderRoute: typeof ApiPublicV1VerifyHandleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ApiDocsRoute: ApiDocsRoute,
+  AuthRoute: AuthRoute,
+  ConsoleRoute: ConsoleRoute,
+  ProtocolRoute: ProtocolRoute,
+  RegistryRoute: RegistryRoute,
+  AgentHandleRoute: AgentHandleRoute,
+  ApiPublicV1RegistryRoute: ApiPublicV1RegistryRoute,
+  ApiPublicV1VerifyHandleRoute: ApiPublicV1VerifyHandleRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
