@@ -16,6 +16,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ApiDocsRouteImport } from './routes/api-docs'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AgentHandleRouteImport } from './routes/agent.$handle'
+import { Route as ApiPublicV1VerifyBundleRouteImport } from './routes/api.public.v1.verify-bundle'
 import { Route as ApiPublicV1RegistryRouteImport } from './routes/api.public.v1.registry'
 import { Route as ApiPublicV1VerifyHandleRouteImport } from './routes/api.public.v1.verify.$handle'
 
@@ -54,6 +55,11 @@ const AgentHandleRoute = AgentHandleRouteImport.update({
   path: '/agent/$handle',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicV1VerifyBundleRoute = ApiPublicV1VerifyBundleRouteImport.update({
+  id: '/api/public/v1/verify-bundle',
+  path: '/api/public/v1/verify-bundle',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicV1RegistryRoute = ApiPublicV1RegistryRouteImport.update({
   id: '/api/public/v1/registry',
   path: '/api/public/v1/registry',
@@ -74,6 +80,7 @@ export interface FileRoutesByFullPath {
   '/registry': typeof RegistryRoute
   '/agent/$handle': typeof AgentHandleRoute
   '/api/public/v1/registry': typeof ApiPublicV1RegistryRoute
+  '/api/public/v1/verify-bundle': typeof ApiPublicV1VerifyBundleRoute
   '/api/public/v1/verify/$handle': typeof ApiPublicV1VerifyHandleRoute
 }
 export interface FileRoutesByTo {
@@ -85,6 +92,7 @@ export interface FileRoutesByTo {
   '/registry': typeof RegistryRoute
   '/agent/$handle': typeof AgentHandleRoute
   '/api/public/v1/registry': typeof ApiPublicV1RegistryRoute
+  '/api/public/v1/verify-bundle': typeof ApiPublicV1VerifyBundleRoute
   '/api/public/v1/verify/$handle': typeof ApiPublicV1VerifyHandleRoute
 }
 export interface FileRoutesById {
@@ -97,6 +105,7 @@ export interface FileRoutesById {
   '/registry': typeof RegistryRoute
   '/agent/$handle': typeof AgentHandleRoute
   '/api/public/v1/registry': typeof ApiPublicV1RegistryRoute
+  '/api/public/v1/verify-bundle': typeof ApiPublicV1VerifyBundleRoute
   '/api/public/v1/verify/$handle': typeof ApiPublicV1VerifyHandleRoute
 }
 export interface FileRouteTypes {
@@ -110,6 +119,7 @@ export interface FileRouteTypes {
     | '/registry'
     | '/agent/$handle'
     | '/api/public/v1/registry'
+    | '/api/public/v1/verify-bundle'
     | '/api/public/v1/verify/$handle'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -121,6 +131,7 @@ export interface FileRouteTypes {
     | '/registry'
     | '/agent/$handle'
     | '/api/public/v1/registry'
+    | '/api/public/v1/verify-bundle'
     | '/api/public/v1/verify/$handle'
   id:
     | '__root__'
@@ -132,6 +143,7 @@ export interface FileRouteTypes {
     | '/registry'
     | '/agent/$handle'
     | '/api/public/v1/registry'
+    | '/api/public/v1/verify-bundle'
     | '/api/public/v1/verify/$handle'
   fileRoutesById: FileRoutesById
 }
@@ -144,6 +156,7 @@ export interface RootRouteChildren {
   RegistryRoute: typeof RegistryRoute
   AgentHandleRoute: typeof AgentHandleRoute
   ApiPublicV1RegistryRoute: typeof ApiPublicV1RegistryRoute
+  ApiPublicV1VerifyBundleRoute: typeof ApiPublicV1VerifyBundleRoute
   ApiPublicV1VerifyHandleRoute: typeof ApiPublicV1VerifyHandleRoute
 }
 
@@ -198,6 +211,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AgentHandleRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/v1/verify-bundle': {
+      id: '/api/public/v1/verify-bundle'
+      path: '/api/public/v1/verify-bundle'
+      fullPath: '/api/public/v1/verify-bundle'
+      preLoaderRoute: typeof ApiPublicV1VerifyBundleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/v1/registry': {
       id: '/api/public/v1/registry'
       path: '/api/public/v1/registry'
@@ -224,8 +244,18 @@ const rootRouteChildren: RootRouteChildren = {
   RegistryRoute: RegistryRoute,
   AgentHandleRoute: AgentHandleRoute,
   ApiPublicV1RegistryRoute: ApiPublicV1RegistryRoute,
+  ApiPublicV1VerifyBundleRoute: ApiPublicV1VerifyBundleRoute,
   ApiPublicV1VerifyHandleRoute: ApiPublicV1VerifyHandleRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
