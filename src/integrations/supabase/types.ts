@@ -14,7 +14,145 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      agents: {
+        Row: {
+          api_key_hash: string
+          api_key_prefix: string
+          created_at: string
+          display_name: string
+          flagged_actions: number
+          handle: string
+          id: string
+          is_active: boolean
+          model: string | null
+          operator_id: string
+          public_key: string | null
+          purpose: string | null
+          reputation_score: number
+          successful_actions: number
+          total_actions: number
+          trust_tier: string
+          updated_at: string
+        }
+        Insert: {
+          api_key_hash: string
+          api_key_prefix: string
+          created_at?: string
+          display_name: string
+          flagged_actions?: number
+          handle: string
+          id?: string
+          is_active?: boolean
+          model?: string | null
+          operator_id: string
+          public_key?: string | null
+          purpose?: string | null
+          reputation_score?: number
+          successful_actions?: number
+          total_actions?: number
+          trust_tier?: string
+          updated_at?: string
+        }
+        Update: {
+          api_key_hash?: string
+          api_key_prefix?: string
+          created_at?: string
+          display_name?: string
+          flagged_actions?: number
+          handle?: string
+          id?: string
+          is_active?: boolean
+          model?: string | null
+          operator_id?: string
+          public_key?: string | null
+          purpose?: string | null
+          reputation_score?: number
+          successful_actions?: number
+          total_actions?: number
+          trust_tier?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      reputation_events: {
+        Row: {
+          agent_id: string
+          context: string | null
+          created_at: string
+          event_type: string
+          id: string
+          metadata: Json | null
+          source: string | null
+          weight: number
+        }
+        Insert: {
+          agent_id: string
+          context?: string | null
+          created_at?: string
+          event_type: string
+          id?: string
+          metadata?: Json | null
+          source?: string | null
+          weight?: number
+        }
+        Update: {
+          agent_id?: string
+          context?: string | null
+          created_at?: string
+          event_type?: string
+          id?: string
+          metadata?: Json | null
+          source?: string | null
+          weight?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reputation_events_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "agents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      verifications: {
+        Row: {
+          agent_id: string
+          created_at: string
+          id: string
+          kind: string
+          status: string
+          value: string
+          verified_at: string | null
+        }
+        Insert: {
+          agent_id: string
+          created_at?: string
+          id?: string
+          kind: string
+          status?: string
+          value: string
+          verified_at?: string | null
+        }
+        Update: {
+          agent_id?: string
+          created_at?: string
+          id?: string
+          kind?: string
+          status?: string
+          value?: string
+          verified_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "verifications_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "agents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
