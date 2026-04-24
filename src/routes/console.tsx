@@ -248,10 +248,19 @@ function ConsolePage() {
                     <div className="mt-4 border-t border-border pt-3 text-[10px] text-muted-foreground">
                       key: <span className="text-terminal">{a.api_key_prefix}...</span>
                     </div>
-                    <div className="mt-3 flex gap-2">
-                      <Link to="/agent/$handle" params={{ handle: a.handle }} className="flex-1">
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <Link to="/agent/$handle" params={{ handle: a.handle }} className="flex-1 min-w-[80px]">
                         <Button variant="outline" size="sm" className="w-full">VIEW</Button>
                       </Link>
+                      <Button
+                        variant="amber"
+                        size="sm"
+                        disabled={exportingId === a.id}
+                        onClick={() => handleExport(a)}
+                        title="Export signed passport bundle (JSON)"
+                      >
+                        {exportingId === a.id ? "SIGNING..." : "EXPORT"}
+                      </Button>
                       <Button variant="ghost" size="sm" onClick={() => deleteAgent(a.id, a.handle)} className="text-destructive hover:text-destructive">REVOKE</Button>
                     </div>
                   </div>
