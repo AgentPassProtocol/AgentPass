@@ -5,6 +5,8 @@ import { TerminalHeader } from "@/components/TerminalHeader";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { generateApiKey, generateHandle, tierForScore } from "@/lib/agent-utils";
+import { exportPassportBundle } from "@/lib/passport-export.functions";
+import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/console")({
