@@ -16,6 +16,8 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ApiDocsRouteImport } from './routes/api-docs'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AgentHandleRouteImport } from './routes/agent.$handle'
+import { Route as ApiPublicV1RegistryRouteImport } from './routes/api.public.v1.registry'
+import { Route as ApiPublicV1VerifyHandleRouteImport } from './routes/api.public.v1.verify.$handle'
 
 const RegistryRoute = RegistryRouteImport.update({
   id: '/registry',
@@ -52,6 +54,16 @@ const AgentHandleRoute = AgentHandleRouteImport.update({
   path: '/agent/$handle',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicV1RegistryRoute = ApiPublicV1RegistryRouteImport.update({
+  id: '/api/public/v1/registry',
+  path: '/api/public/v1/registry',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicV1VerifyHandleRoute = ApiPublicV1VerifyHandleRouteImport.update({
+  id: '/api/public/v1/verify/$handle',
+  path: '/api/public/v1/verify/$handle',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -61,6 +73,8 @@ export interface FileRoutesByFullPath {
   '/protocol': typeof ProtocolRoute
   '/registry': typeof RegistryRoute
   '/agent/$handle': typeof AgentHandleRoute
+  '/api/public/v1/registry': typeof ApiPublicV1RegistryRoute
+  '/api/public/v1/verify/$handle': typeof ApiPublicV1VerifyHandleRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -70,6 +84,8 @@ export interface FileRoutesByTo {
   '/protocol': typeof ProtocolRoute
   '/registry': typeof RegistryRoute
   '/agent/$handle': typeof AgentHandleRoute
+  '/api/public/v1/registry': typeof ApiPublicV1RegistryRoute
+  '/api/public/v1/verify/$handle': typeof ApiPublicV1VerifyHandleRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -80,6 +96,8 @@ export interface FileRoutesById {
   '/protocol': typeof ProtocolRoute
   '/registry': typeof RegistryRoute
   '/agent/$handle': typeof AgentHandleRoute
+  '/api/public/v1/registry': typeof ApiPublicV1RegistryRoute
+  '/api/public/v1/verify/$handle': typeof ApiPublicV1VerifyHandleRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -91,6 +109,8 @@ export interface FileRouteTypes {
     | '/protocol'
     | '/registry'
     | '/agent/$handle'
+    | '/api/public/v1/registry'
+    | '/api/public/v1/verify/$handle'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -100,6 +120,8 @@ export interface FileRouteTypes {
     | '/protocol'
     | '/registry'
     | '/agent/$handle'
+    | '/api/public/v1/registry'
+    | '/api/public/v1/verify/$handle'
   id:
     | '__root__'
     | '/'
@@ -109,6 +131,8 @@ export interface FileRouteTypes {
     | '/protocol'
     | '/registry'
     | '/agent/$handle'
+    | '/api/public/v1/registry'
+    | '/api/public/v1/verify/$handle'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -119,6 +143,8 @@ export interface RootRouteChildren {
   ProtocolRoute: typeof ProtocolRoute
   RegistryRoute: typeof RegistryRoute
   AgentHandleRoute: typeof AgentHandleRoute
+  ApiPublicV1RegistryRoute: typeof ApiPublicV1RegistryRoute
+  ApiPublicV1VerifyHandleRoute: typeof ApiPublicV1VerifyHandleRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -172,6 +198,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AgentHandleRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/v1/registry': {
+      id: '/api/public/v1/registry'
+      path: '/api/public/v1/registry'
+      fullPath: '/api/public/v1/registry'
+      preLoaderRoute: typeof ApiPublicV1RegistryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/v1/verify/$handle': {
+      id: '/api/public/v1/verify/$handle'
+      path: '/api/public/v1/verify/$handle'
+      fullPath: '/api/public/v1/verify/$handle'
+      preLoaderRoute: typeof ApiPublicV1VerifyHandleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -183,7 +223,18 @@ const rootRouteChildren: RootRouteChildren = {
   ProtocolRoute: ProtocolRoute,
   RegistryRoute: RegistryRoute,
   AgentHandleRoute: AgentHandleRoute,
+  ApiPublicV1RegistryRoute: ApiPublicV1RegistryRoute,
+  ApiPublicV1VerifyHandleRoute: ApiPublicV1VerifyHandleRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
