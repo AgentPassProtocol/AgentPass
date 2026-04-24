@@ -41,6 +41,35 @@ function ConsolePage() {
   const [model, setModel] = useState("gpt-5.2");
   const [purpose, setPurpose] = useState("");
   const [busy, setBusy] = useState(false);
+  const [exportingId, setExportingId] = useState<string | null>(null);
+  const exportFn = useServerFn(exportPassportBundle);
+
+  async function handleExport(agent: Agent) {
+    setExportingId(agent.id);
+    try {
+      const { bundle } = await exportFn({ data: { agentId: agent.id } });
+      const json = JSON.stringify(bundle, null, 2);
+      const blob = new Blob([json], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `passport-${agent.handle}.json`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      try {
+        await navigator.clipboard.writeText(json);
+        toast.success(`Bundle exported · ${agent.handle} (also copied)`);
+      } catch {
+        toast.success(`Bundle exported · ${agent.handle}`);
+      }
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Export failed");
+    } finally {
+      setExportingId(null);
+    }
+  }
 
   useEffect(() => {
     if (!loading && !user) navigate({ to: "/auth" });
