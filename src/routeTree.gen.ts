@@ -13,6 +13,7 @@ import { Route as RegistryRouteImport } from './routes/registry'
 import { Route as ConsoleRouteImport } from './routes/console'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AgentHandleRouteImport } from './routes/agent.$handle'
 
 const RegistryRoute = RegistryRouteImport.update({
   id: '/registry',
@@ -34,18 +35,25 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AgentHandleRoute = AgentHandleRouteImport.update({
+  id: '/agent/$handle',
+  path: '/agent/$handle',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/console': typeof ConsoleRoute
   '/registry': typeof RegistryRoute
+  '/agent/$handle': typeof AgentHandleRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/console': typeof ConsoleRoute
   '/registry': typeof RegistryRoute
+  '/agent/$handle': typeof AgentHandleRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -53,13 +61,14 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/console': typeof ConsoleRoute
   '/registry': typeof RegistryRoute
+  '/agent/$handle': typeof AgentHandleRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/console' | '/registry'
+  fullPaths: '/' | '/auth' | '/console' | '/registry' | '/agent/$handle'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/console' | '/registry'
-  id: '__root__' | '/' | '/auth' | '/console' | '/registry'
+  to: '/' | '/auth' | '/console' | '/registry' | '/agent/$handle'
+  id: '__root__' | '/' | '/auth' | '/console' | '/registry' | '/agent/$handle'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -67,6 +76,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   ConsoleRoute: typeof ConsoleRoute
   RegistryRoute: typeof RegistryRoute
+  AgentHandleRoute: typeof AgentHandleRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -99,6 +109,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/agent/$handle': {
+      id: '/agent/$handle'
+      path: '/agent/$handle'
+      fullPath: '/agent/$handle'
+      preLoaderRoute: typeof AgentHandleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -107,6 +124,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   ConsoleRoute: ConsoleRoute,
   RegistryRoute: RegistryRoute,
+  AgentHandleRoute: AgentHandleRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
