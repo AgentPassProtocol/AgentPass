@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
-const ORIGIN = "https://agent-nirvana.lovable.app";
+const ORIGIN = "https://agent-pass.fun";
 
 const STATIC_ROUTES: Array<{ path: string; priority: string; changefreq: string }> = [
   { path: "/", priority: "1.0", changefreq: "daily" },

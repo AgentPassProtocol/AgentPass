@@ -89,7 +89,7 @@ function AgentDetail() {
     // Always point QR to the public published URL, not the private preview/lovableproject host
     const host = window.location.hostname;
     const isPublic = host.endsWith(".lovable.app") && !host.includes("preview--") && !host.includes("id-preview");
-    const publicOrigin = isPublic ? window.location.origin : "https://agent-nirvana.lovable.app";
+    const publicOrigin = isPublic ? window.location.origin : "https://agent-pass.fun";
     const url = `${publicOrigin}/agent/${agent.handle}`;
     QRCode.toDataURL(url, {
       margin: 1,
