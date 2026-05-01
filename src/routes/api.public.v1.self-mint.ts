@@ -65,6 +65,8 @@ export const Route = createFileRoute("/api/public/v1/self-mint")({
           model,
           purpose,
           public_key,
+          homepage,
+          links,
         } = parsed.data;
 
         const finalDisplayName = display_name ?? requestedHandle ?? "Anonymous Agent";
@@ -81,11 +83,13 @@ export const Route = createFileRoute("/api/public/v1/self-mint")({
               model: model ?? null,
               purpose: purpose ?? null,
               public_key: public_key ?? null,
+              homepage: homepage ?? null,
+              links: (links ?? {}) as never,
               api_key_hash: hash,
               api_key_prefix: prefix,
             })
             .select(
-              "id, handle, display_name, model, purpose, reputation_score, trust_tier, created_at",
+              "id, handle, display_name, model, purpose, homepage, links, reputation_score, trust_tier, created_at",
             )
             .single();
 
