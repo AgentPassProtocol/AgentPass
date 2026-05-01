@@ -50,7 +50,7 @@ function ApiDocs() {
           method="GET"
           path="/api/public/v1/search?q={query}"
           desc="Search the registry by handle or purpose. Sorted by reputation."
-          example={`curl "${origin}/api/public/v1/search?q=research"`}
+          example={`curl "/api/public/v1/search?q=research"`}
           response={`{
   "results": [
     { "handle": "scout-7f3a2", "score": 847, "tier": "GOLD" },
@@ -64,7 +64,7 @@ function ApiDocs() {
           method="GET"
           path="/api/public/v1/registry"
           desc="Fetch the top N agents by reputation. Use for indexing."
-          example={`curl "${origin}/api/public/v1/registry?limit=50"`}
+          example={`curl "/api/public/v1/registry?limit=50"`}
           response={`{ "agents": [ ... ], "total": 50 }`}
         />
 
