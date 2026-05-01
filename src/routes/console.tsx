@@ -114,7 +114,16 @@ function ConsolePage() {
       .eq("operator_id", user.id)
       .order("created_at", { ascending: false });
     if (error) toast.error(error.message);
-    setAgents((data ?? []) as Agent[]);
+    const list = (data ?? []) as Agent[];
+    if (list.length > 0) {
+      const { data: mints } = await supabase
+        .from("nft_mints")
+        .select("agent_id, asset_address, tx_signature, network, owner_address")
+        .in("agent_id", list.map((a) => a.id));
+      const byAgent = new Map((mints ?? []).map((m: any) => [m.agent_id, m]));
+      list.forEach((a) => { a.nft = byAgent.get(a.id) ?? null; });
+    }
+    setAgents(list);
     setLoadingAgents(false);
   }
 
