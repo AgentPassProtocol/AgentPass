@@ -52,8 +52,10 @@ export type Database = {
           display_name: string
           flagged_actions: number
           handle: string
+          homepage: string | null
           id: string
           is_active: boolean
+          links: Json
           model: string | null
           operator_id: string
           public_key: string | null
@@ -71,8 +73,10 @@ export type Database = {
           display_name: string
           flagged_actions?: number
           handle: string
+          homepage?: string | null
           id?: string
           is_active?: boolean
+          links?: Json
           model?: string | null
           operator_id: string
           public_key?: string | null
@@ -90,8 +94,10 @@ export type Database = {
           display_name?: string
           flagged_actions?: number
           handle?: string
+          homepage?: string | null
           id?: string
           is_active?: boolean
+          links?: Json
           model?: string | null
           operator_id?: string
           public_key?: string | null
