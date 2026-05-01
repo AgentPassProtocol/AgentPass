@@ -196,60 +196,71 @@ function Landing() {
                     <span className="h-2.5 w-2.5 bg-terminal"></span>
                   </div>
                   <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-                    passport.json — agentpass://scout-7f3a2
+                    {topAgent ? `passport.json — agentpass://${topAgent.handle}` : "passport.json — registry empty"}
                   </span>
-                  <span className="font-mono text-[10px] text-terminal">●REC</span>
+                  <span className="font-mono text-[10px] text-terminal">●LIVE</span>
                 </div>
 
                 <div className="p-5 font-mono text-xs">
-                  <BootSequence />
+                  <BootSequence stats={stats} />
                   <div className="mt-5 border-t border-dashed border-border pt-4">
-                    <div className="text-[10px] uppercase tracking-widest text-muted-foreground">// AGENT PASSPORT</div>
-                    <div className="mt-2 flex items-baseline gap-3">
-                      <span className="text-terminal">handle:</span>
-                      <span className="font-bold text-foreground term-glow">scout-7f3a2</span>
+                    <div className="text-[10px] uppercase tracking-widest text-muted-foreground">
+                      // {topAgent ? "TOP AGENT (LIVE)" : "AWAITING FIRST AGENT"}
                     </div>
-                    <div className="mt-1 flex items-baseline gap-3">
-                      <span className="text-terminal">model:</span>
-                      <span className="text-foreground">gpt-5.2</span>
-                    </div>
-                    <div className="mt-1 flex items-baseline gap-3">
-                      <span className="text-terminal">purpose:</span>
-                      <span className="text-foreground">research_assistant</span>
-                    </div>
+                    {topAgent ? (
+                      <>
+                        <div className="mt-2 flex items-baseline gap-3">
+                          <span className="text-terminal">handle:</span>
+                          <span className="font-bold text-foreground term-glow">{topAgent.handle}</span>
+                        </div>
+                        <div className="mt-1 flex items-baseline gap-3">
+                          <span className="text-terminal">model:</span>
+                          <span className="text-foreground">{topAgent.model ?? "unspecified"}</span>
+                        </div>
+                        <div className="mt-1 flex items-baseline gap-3">
+                          <span className="text-terminal">purpose:</span>
+                          <span className="text-foreground truncate">{topAgent.purpose ?? "—"}</span>
+                        </div>
 
-                    <div className="mt-4 border border-border bg-background/60 p-3">
-                      <div className="flex items-baseline justify-between">
-                        <span className="text-[10px] uppercase tracking-widest text-muted-foreground">REPUTATION</span>
-                        <span className={`text-[10px] uppercase tracking-widest ${tierForScore(847).color}`}>
-                          {tierForScore(847).tier}
-                        </span>
-                      </div>
-                      <div className="mt-2 flex items-baseline gap-2">
-                        <span className="text-3xl font-extrabold text-terminal term-glow">847</span>
-                        <span className="text-xs text-muted-foreground">/ 1000</span>
-                      </div>
-                      <div className="mt-2 h-1.5 w-full bg-border">
-                        <div className="h-full bg-terminal" style={{ width: "84.7%" }}></div>
-                      </div>
-                      <div className="mt-3 grid grid-cols-3 gap-2 text-[10px] uppercase tracking-widest">
-                        <div><span className="text-terminal">12,481</span><br /><span className="text-muted-foreground">success</span></div>
-                        <div><span className="text-amber">147</span><br /><span className="text-muted-foreground">flagged</span></div>
-                        <div><span className="text-cyan">94.2%</span><br /><span className="text-muted-foreground">trust</span></div>
-                      </div>
-                    </div>
+                        <div className="mt-4 border border-border bg-background/60 p-3">
+                          <div className="flex items-baseline justify-between">
+                            <span className="text-[10px] uppercase tracking-widest text-muted-foreground">REPUTATION</span>
+                            <span className={`text-[10px] uppercase tracking-widest ${tierForScore(topAgent.reputation_score).color}`}>
+                              {tierForScore(topAgent.reputation_score).tier}
+                            </span>
+                          </div>
+                          <div className="mt-2 flex items-baseline gap-2">
+                            <span className="text-3xl font-extrabold text-terminal term-glow">{topAgent.reputation_score}</span>
+                            <span className="text-xs text-muted-foreground">/ 1000</span>
+                          </div>
+                          <div className="mt-2 h-1.5 w-full bg-border">
+                            <div
+                              className="h-full bg-terminal"
+                              style={{ width: `${Math.min(100, (topAgent.reputation_score / 1000) * 100)}%` }}
+                            ></div>
+                          </div>
+                          <div className="mt-3 grid grid-cols-3 gap-2 text-[10px] uppercase tracking-widest">
+                            <div><span className="text-terminal">{topAgent.successful_actions.toLocaleString()}</span><br /><span className="text-muted-foreground">success</span></div>
+                            <div><span className="text-amber">{topAgent.flagged_actions.toLocaleString()}</span><br /><span className="text-muted-foreground">flagged</span></div>
+                            <div>
+                              <span className="text-cyan">
+                                {topAgent.total_actions > 0
+                                  ? `${((topAgent.successful_actions / topAgent.total_actions) * 100).toFixed(1)}%`
+                                  : "—"}
+                              </span><br /><span className="text-muted-foreground">trust</span>
+                            </div>
+                          </div>
+                        </div>
 
-                    <div className="mt-3 flex flex-wrap gap-1.5">
-                      {["domain:✓", "github:✓", "cap:web", "cap:read", "since:2025"].map((b) => (
-                        <span key={b} className="border border-terminal/40 bg-terminal/5 px-1.5 py-0.5 text-[10px] text-terminal">
-                          {b}
-                        </span>
-                      ))}
-                    </div>
-
-                    <div className="mt-4 text-[10px] text-muted-foreground">
-                      sig: <span className="text-terminal">ed25519:0x4f...c91a</span>
-                    </div>
+                        <div className="mt-4 text-[10px] text-muted-foreground">
+                          verify → <span className="text-terminal">/api/public/v1/verify/{topAgent.handle}</span>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="mt-3 text-[11px] text-muted-foreground">
+                        No agents minted yet. Be the first — <Link to="/auth" className="text-terminal hover:underline">mint a passport</Link>.
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
