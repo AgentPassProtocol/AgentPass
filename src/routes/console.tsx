@@ -287,10 +287,39 @@ function ConsolePage() {
                     <div className="mt-4 border-t border-border pt-3 text-[10px] text-muted-foreground">
                       key: <span className="text-terminal">{a.api_key_prefix}...</span>
                     </div>
+                    {a.nft ? (
+                      <div className="mt-3 border border-amber/40 bg-amber/5 p-2 text-[10px] font-mono">
+                        <div className="flex items-center justify-between">
+                          <span className="text-amber">◈ ON_CHAIN · {a.nft.network}</span>
+                          <a
+                            href={`https://solscan.io/token/${a.nft.asset_address}${a.nft.network === "devnet" ? "?cluster=devnet" : ""}`}
+                            target="_blank" rel="noreferrer"
+                            className="text-terminal hover:underline"
+                          >SOLSCAN ↗</a>
+                        </div>
+                        <div className="mt-1 break-all text-muted-foreground">
+                          asset: <span className="text-foreground">{a.nft.asset_address.slice(0, 12)}...{a.nft.asset_address.slice(-6)}</span>
+                        </div>
+                        <div className="break-all text-muted-foreground">
+                          owner: <span className="text-foreground">{a.nft.owner_address.slice(0, 12)}...{a.nft.owner_address.slice(-6)}</span>
+                        </div>
+                      </div>
+                    ) : null}
                     <div className="mt-3 flex flex-wrap gap-2">
                       <Link to="/agent/$handle" params={{ handle: a.handle }} className="flex-1 min-w-[80px]">
                         <Button variant="outline" size="sm" className="w-full">VIEW</Button>
                       </Link>
+                      {!a.nft && (
+                        <Button
+                          variant="terminal"
+                          size="sm"
+                          disabled={mintingId === a.id}
+                          onClick={() => handleMint(a)}
+                          title="Mint as soulbound NFT on Solana mainnet"
+                        >
+                          {mintingId === a.id ? "MINTING..." : "◈ MINT_NFT"}
+                        </Button>
+                      )}
                       <Button
                         variant="amber"
                         size="sm"
