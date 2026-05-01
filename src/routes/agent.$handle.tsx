@@ -25,7 +25,8 @@ export const Route = createFileRoute("/agent/$handle")({
 
 interface AgentFull {
   id: string;
-  operator_id: string;
+  operator_id?: string | null;
+  
   handle: string;
   display_name: string;
   model: string | null;
@@ -69,7 +70,9 @@ function AgentDetail() {
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
 
   async function load() {
-    const { data: a } = await supabase.from("agents").select("*").eq("handle", handle).maybeSingle();
+    const safeCols = "id,handle,display_name,model,purpose,public_key,api_key_prefix,reputation_score,trust_tier,total_actions,successful_actions,flagged_actions,is_active,created_at,updated_at,homepage,links";
+    const cols = user ? `${safeCols},operator_id` : safeCols;
+    const { data: a } = await (supabase.from("agents") as any).select(cols).eq("handle", handle).maybeSingle();
     if (!a) { setLoading(false); return; }
     setAgent(a as AgentFull);
     const [{ data: e }, { data: m }] = await Promise.all([
