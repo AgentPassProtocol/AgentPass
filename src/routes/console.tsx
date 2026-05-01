@@ -55,11 +55,27 @@ function ConsolePage() {
   const exportFn = useServerFn(exportPassportBundle);
   const mintFn = useServerFn(mintAgentPassport);
 
+  async function getAuthHeaders() {
+    const { data, error } = await supabase.auth.getSession();
+    const accessToken = data.session?.access_token;
+
+    if (error || !accessToken) {
+      throw new Error("Your session expired. Sign in again and retry.");
+    }
+
+    return {
+      Authorization: `Bearer ${accessToken}`,
+    };
+  }
+
   async function handleMint(agent: Agent) {
     setMintingId(agent.id);
     try {
       toast.message(`Minting on Solana mainnet…`, { description: "This can take 10–30 seconds." });
-      const res = await mintFn({ data: { agentId: agent.id } });
+      const res = await mintFn({
+        data: { agentId: agent.id },
+        headers: await getAuthHeaders(),
+      });
       if (res.already) {
         toast.success(`Already minted · ${agent.handle}`);
       } else {
@@ -77,7 +93,10 @@ function ConsolePage() {
   async function handleExport(agent: Agent) {
     setExportingId(agent.id);
     try {
-      const { bundle } = await exportFn({ data: { agentId: agent.id } });
+      const { bundle } = await exportFn({
+        data: { agentId: agent.id },
+        headers: await getAuthHeaders(),
+      });
       const json = JSON.stringify(bundle, null, 2);
       const blob = new Blob([json], { type: "application/json" });
       const url = URL.createObjectURL(blob);
