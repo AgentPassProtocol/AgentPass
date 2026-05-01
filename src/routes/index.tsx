@@ -85,19 +85,33 @@ function BootSequence({ stats }: { stats: { agents: number; events: number } }) 
 
 function Landing() {
   const [stats, setStats] = useState({ agents: 0, events: 0, verified: 0 });
+  const [topAgent, setTopAgent] = useState<{
+    handle: string;
+    display_name: string;
+    model: string | null;
+    purpose: string | null;
+    reputation_score: number;
+    successful_actions: number;
+    flagged_actions: number;
+    total_actions: number;
+  } | null>(null);
 
   useEffect(() => {
     (async () => {
-      const [{ count: a }, { count: e }, { count: v }] = await Promise.all([
+      const [{ count: a }, { count: e }, { count: v }, { data: top }] = await Promise.all([
         supabase.from("agents").select("*", { count: "exact", head: true }),
         supabase.from("reputation_events").select("*", { count: "exact", head: true }),
         supabase.from("verifications").select("*", { count: "exact", head: true }).eq("status", "verified"),
+        supabase
+          .from("agents")
+          .select("handle,display_name,model,purpose,reputation_score,successful_actions,flagged_actions,total_actions")
+          .eq("is_active", true)
+          .order("reputation_score", { ascending: false })
+          .limit(1)
+          .maybeSingle(),
       ]);
-      setStats({
-        agents: (a ?? 0) + 12847,
-        events: (e ?? 0) + 1_204_512,
-        verified: (v ?? 0) + 4327,
-      });
+      setStats({ agents: a ?? 0, events: e ?? 0, verified: v ?? 0 });
+      if (top) setTopAgent(top);
     })();
   }, []);
 
