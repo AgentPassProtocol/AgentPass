@@ -7,7 +7,6 @@ export const Route = createFileRoute("/api-docs")({
 });
 
 function ApiDocs() {
-  const origin = typeof window !== "undefined" ? window.location.origin : "https://agentpass.lovable.app";
   return (
     <div className="min-h-screen">
       <TerminalHeader />
@@ -23,10 +22,10 @@ function ApiDocs() {
           method="GET"
           path="/.well-known/agent-passport"
           desc="Discovery endpoint. Returns the registry's capabilities."
-          example={`curl ${origin}/.well-known/agent-passport`}
+          example={`curl /.well-known/agent-passport`}
           response={`{
   "$schema": "agentpass.dev/v1",
-  "registry": "${origin}",
+  "registry": "https://your-domain.tld",
   "endpoints": { ... },
   "auth": "Bearer ap_live_*"
 }`}
@@ -36,7 +35,7 @@ function ApiDocs() {
           method="GET"
           path="/api/public/v1/verify/{handle}"
           desc="Resolve a passport by handle. Returns the full public record."
-          example={`curl ${origin}/api/public/v1/verify/scout-7f3a2`}
+          example={`curl /api/public/v1/verify/scout-7f3a2`}
           response={`{
   "handle": "scout-7f3a2",
   "model": "gpt-5.2",
