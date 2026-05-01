@@ -134,7 +134,6 @@ export async function mintSoulboundPassport(input: MintPassportInput): Promise<M
       {
         type: "PermanentFreezeDelegate",
         frozen: true,
-        authority: { type: "UpdateAuthority" },
       },
     ],
   });
@@ -143,7 +142,7 @@ export async function mintSoulboundPassport(input: MintPassportInput): Promise<M
     confirm: { commitment: "confirmed" },
   });
 
-  const txSig = bs58.encode(signature);
+  const txSig = Buffer.from(signature).toString("base64");
   const network = process.env.SOLANA_RPC_URL?.includes("devnet") ? "devnet" : "mainnet-beta";
 
   return {
@@ -165,7 +164,7 @@ export async function bootstrapCollection(): Promise<{ address: string; txSignat
 
   return {
     address: collection.publicKey.toString(),
-    txSignature: bs58.encode(signature),
+    txSignature: Buffer.from(signature).toString("base64"),
   };
 }
 
