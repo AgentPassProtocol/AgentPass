@@ -84,7 +84,11 @@ function AgentDetail() {
   // Generate QR code pointing to this passport URL (or directly to the NFT on Solscan if minted)
   useEffect(() => {
     if (typeof window === "undefined" || !agent) return;
-    const url = `${window.location.origin}/agent/${agent.handle}`;
+    // Always point QR to the public published URL, not the private preview/lovableproject host
+    const host = window.location.hostname;
+    const isPublic = host.endsWith(".lovable.app") && !host.includes("preview--") && !host.includes("id-preview");
+    const publicOrigin = isPublic ? window.location.origin : "https://agent-nirvana.lovable.app";
+    const url = `${publicOrigin}/agent/${agent.handle}`;
     QRCode.toDataURL(url, {
       margin: 1,
       width: 220,
