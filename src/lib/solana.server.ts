@@ -30,6 +30,35 @@ const bs58Codec = (bs58 as unknown as {
   decode: (value: string) => Uint8Array;
 });
 
+function getSolanaRpcUrl(): string {
+  const raw = process.env.SOLANA_RPC_URL;
+  if (!raw) throw new Error("SOLANA_RPC_URL not configured");
+
+  const trimmed = raw.trim().replace(/^['"]|['"]$/g, "");
+  const normalized = /^https?:\/\//i.test(trimmed)
+    ? trimmed
+    : trimmed.startsWith("//")
+      ? `https:${trimmed}`
+      : `https://${trimmed}`;
+
+  let parsed: URL;
+  try {
+    parsed = new URL(normalized);
+  } catch {
+    throw new Error(
+      `Invalid SOLANA_RPC_URL. Expected a full RPC endpoint like https://api.mainnet-beta.solana.com, received: ${trimmed || "<empty>"}`,
+    );
+  }
+
+  if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+    throw new Error(
+      `Invalid SOLANA_RPC_URL protocol: ${parsed.protocol}. Expected http: or https:.`,
+    );
+  }
+
+  return parsed.toString();
+}
+
 function getMasterKey(): Buffer {
   const hex = process.env.WALLET_ENCRYPTION_KEY;
   if (!hex) throw new Error("WALLET_ENCRYPTION_KEY not configured");
@@ -90,8 +119,7 @@ function getRelayerKeypair(): Keypair {
 }
 
 export function getUmi() {
-  const rpc = process.env.SOLANA_RPC_URL;
-  if (!rpc) throw new Error("SOLANA_RPC_URL not configured");
+  const rpc = getSolanaRpcUrl();
   const umi = createUmi(rpc).use(mplCore());
   const relayer = getRelayerKeypair();
   const umiKeypair = umi.eddsa.createKeypairFromSecretKey(relayer.secretKey);
@@ -163,7 +191,7 @@ export async function mintSoulboundPassport(input: MintPassportInput): Promise<M
   });
 
   const txSig = bs58Codec.encode(signature);
-  const network = process.env.SOLANA_RPC_URL?.includes("devnet") ? "devnet" : "mainnet-beta";
+  const network = getSolanaRpcUrl().includes("devnet") ? "devnet" : "mainnet-beta";
 
   return {
     assetAddress: asset.publicKey.toString(),
