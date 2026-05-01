@@ -30,6 +30,8 @@ interface AgentFull {
   display_name: string;
   model: string | null;
   purpose: string | null;
+  homepage: string | null;
+  links: Record<string, string> | null;
   api_key_prefix: string;
   reputation_score: number;
   trust_tier: string;
