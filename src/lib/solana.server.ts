@@ -121,7 +121,16 @@ export async function mintSoulboundPassport(input: MintPassportInput): Promise<M
   // Fetch the full CollectionV1 account so those arrays are populated.
   let collectionAccount: Awaited<ReturnType<typeof fetchCollection>> | undefined;
   if (input.collectionAddress) {
-    collectionAccount = await fetchCollection(umi, umiPublicKey(input.collectionAddress));
+    const fetched = await fetchCollection(umi, umiPublicKey(input.collectionAddress));
+    collectionAccount = {
+      ...fetched,
+      oracles: fetched.oracles ?? [],
+      lifecycleHooks: fetched.lifecycleHooks ?? [],
+      appDatas: fetched.appDatas ?? [],
+      dataSections: fetched.dataSections ?? [],
+      linkedAppDatas: fetched.linkedAppDatas ?? [],
+      agentIdentities: fetched.agentIdentities ?? [],
+    };
   }
 
   const builder = createAsset(umi, {
