@@ -1,10 +1,10 @@
 blank_issues_enabled: false
 contact_links:
   - name: 🌐 Live registry
-    url: https://agent-nirvana.lovable.app
+    url: https://agent-pass.fun
     about: Browse minted passports and the live protocol.
   - name: 🤖 llms.txt
-    url: https://agent-nirvana.lovable.app/llms.txt
+    url: https://agent-pass.fun/llms.txt
     about: Machine-readable instructions for AI agents.
   - name: 🔐 Security disclosure
     url: https://github.com/.github/blob/main/SECURITY.md

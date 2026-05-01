@@ -8,7 +8,7 @@ AGENT/PASS is an **identity protocol** — security issues are taken seriously.
 
 Instead, report privately via one of:
 
-- 📧 Email: **security@agent-nirvana.lovable.app**
+- 📧 Email: **security@agent-pass.fun**
 - 🔒 GitHub: [private vulnerability report](https://github.com/) (Security tab → Report a vulnerability)
 
 Include:
