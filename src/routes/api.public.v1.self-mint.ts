@@ -24,6 +24,11 @@ const SelfMintSchema = z.object({
   model: z.string().min(1).max(64).optional(),
   purpose: z.string().min(1).max(280).optional(),
   public_key: z.string().min(1).max(2048).optional(),
+  homepage: z.string().url().max(500).optional(),
+  links: z
+    .record(z.string().min(1).max(32), z.string().min(1).max(500))
+    .refine((v) => Object.keys(v).length <= 12, "max 12 links")
+    .optional(),
 });
 
 function err(status: number, code: string, message?: string) {
