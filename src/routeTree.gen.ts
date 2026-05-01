@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as RegistryRouteImport } from './routes/registry'
 import { Route as ProtocolRouteImport } from './routes/protocol'
@@ -28,6 +29,11 @@ import { Route as ApiPublicV1VerifyHandleRouteImport } from './routes/api.public
 import { Route as ApiPublicV1PassportMetadataHandleRouteImport } from './routes/api.public.v1.passport-metadata.$handle'
 import { Route as ApiPublicV1PassportImageHandleRouteImport } from './routes/api.public.v1.passport-image.$handle'
 
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
   id: '/robots.txt',
   path: '/robots.txt',
@@ -131,6 +137,7 @@ export interface FileRoutesByFullPath {
   '/protocol': typeof ProtocolRoute
   '/registry': typeof RegistryRoute
   '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/agent/$handle': typeof AgentHandleRoute
   '/api/public/v1/agents': typeof ApiPublicV1AgentsRoute
   '/api/public/v1/event': typeof ApiPublicV1EventRoute
@@ -151,6 +158,7 @@ export interface FileRoutesByTo {
   '/protocol': typeof ProtocolRoute
   '/registry': typeof RegistryRoute
   '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/agent/$handle': typeof AgentHandleRoute
   '/api/public/v1/agents': typeof ApiPublicV1AgentsRoute
   '/api/public/v1/event': typeof ApiPublicV1EventRoute
@@ -172,6 +180,7 @@ export interface FileRoutesById {
   '/protocol': typeof ProtocolRoute
   '/registry': typeof RegistryRoute
   '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/agent/$handle': typeof AgentHandleRoute
   '/api/public/v1/agents': typeof ApiPublicV1AgentsRoute
   '/api/public/v1/event': typeof ApiPublicV1EventRoute
@@ -194,6 +203,7 @@ export interface FileRouteTypes {
     | '/protocol'
     | '/registry'
     | '/robots.txt'
+    | '/sitemap.xml'
     | '/agent/$handle'
     | '/api/public/v1/agents'
     | '/api/public/v1/event'
@@ -214,6 +224,7 @@ export interface FileRouteTypes {
     | '/protocol'
     | '/registry'
     | '/robots.txt'
+    | '/sitemap.xml'
     | '/agent/$handle'
     | '/api/public/v1/agents'
     | '/api/public/v1/event'
@@ -234,6 +245,7 @@ export interface FileRouteTypes {
     | '/protocol'
     | '/registry'
     | '/robots.txt'
+    | '/sitemap.xml'
     | '/agent/$handle'
     | '/api/public/v1/agents'
     | '/api/public/v1/event'
@@ -255,6 +267,7 @@ export interface RootRouteChildren {
   ProtocolRoute: typeof ProtocolRoute
   RegistryRoute: typeof RegistryRoute
   RobotsDottxtRoute: typeof RobotsDottxtRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   AgentHandleRoute: typeof AgentHandleRoute
   ApiPublicV1AgentsRoute: typeof ApiPublicV1AgentsRoute
   ApiPublicV1EventRoute: typeof ApiPublicV1EventRoute
@@ -268,6 +281,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/robots.txt': {
       id: '/robots.txt'
       path: '/robots.txt'
@@ -407,6 +427,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProtocolRoute: ProtocolRoute,
   RegistryRoute: RegistryRoute,
   RobotsDottxtRoute: RobotsDottxtRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   AgentHandleRoute: AgentHandleRoute,
   ApiPublicV1AgentsRoute: ApiPublicV1AgentsRoute,
   ApiPublicV1EventRoute: ApiPublicV1EventRoute,
