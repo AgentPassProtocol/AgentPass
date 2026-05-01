@@ -26,7 +26,7 @@ export const Route = createFileRoute("/api/public/v1/verify/$handle")({
         }
         const { data, error } = await supabaseAdmin
           .from("agents")
-          .select("handle,display_name,model,purpose,reputation_score,total_actions,successful_actions,flagged_actions,is_active,created_at,api_key_prefix")
+          .select("handle,display_name,model,purpose,homepage,links,reputation_score,total_actions,successful_actions,flagged_actions,is_active,created_at,api_key_prefix")
           .eq("handle", handle)
           .maybeSingle();
 
