@@ -25,6 +25,7 @@ export const Route = createFileRoute("/agent/$handle")({
 
 interface AgentFull {
   id: string;
+  operator_id?: string | null;
   
   handle: string;
   display_name: string;
