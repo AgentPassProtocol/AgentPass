@@ -51,14 +51,16 @@ export const Route = createFileRoute("/")({
   component: Landing,
 });
 
-const BOOT_LINES = [
-  "[init] booting agentpass.runtime v0.1.0-alpha",
-  "[net]  connecting to registry mesh ............ OK",
-  "[crypto] loading ed25519 verification keys .... OK",
-  "[idx]  agents indexed: 12,847                   OK",
-  "[rep]  reputation events processed: 1.2M        OK",
-  "[ok]   ready. awaiting agent.",
-];
+function buildBootLines(stats: { agents: number; events: number }) {
+  return [
+    "[init] booting agentpass.runtime v0.1.0-alpha",
+    "[net]  connecting to registry mesh ............ OK",
+    "[crypto] loading ed25519 verification keys .... OK",
+    `[idx]  agents indexed: ${stats.agents.toLocaleString().padEnd(24, " ")}OK`,
+    `[rep]  reputation events processed: ${stats.events.toLocaleString().padEnd(13, " ")}OK`,
+    "[ok]   ready. awaiting agent.",
+  ];
+}
 
 function BootSequence() {
   const [shown, setShown] = useState(0);
