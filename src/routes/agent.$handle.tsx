@@ -1,5 +1,6 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import QRCode from "qrcode";
 import { TerminalHeader } from "@/components/TerminalHeader";
 import { TerminalFooter } from "@/components/TerminalFooter";
 import { supabase } from "@/integrations/supabase/client";
@@ -47,6 +48,14 @@ interface RepEvent {
   created_at: string;
 }
 
+interface NftMint {
+  asset_address: string;
+  tx_signature: string;
+  network: string;
+  owner_address: string;
+  metadata_uri: string;
+}
+
 function AgentDetail() {
   const { handle } = Route.useParams();
   const { user } = useAuth();
@@ -54,22 +63,34 @@ function AgentDetail() {
   const [events, setEvents] = useState<RepEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [nft, setNft] = useState<NftMint | null>(null);
+  const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
 
   async function load() {
     const { data: a } = await supabase.from("agents").select("*").eq("handle", handle).maybeSingle();
     if (!a) { setLoading(false); return; }
     setAgent(a as AgentFull);
-    const { data: e } = await supabase
-      .from("reputation_events")
-      .select("*")
-      .eq("agent_id", a.id)
-      .order("created_at", { ascending: false })
-      .limit(50);
+    const [{ data: e }, { data: m }] = await Promise.all([
+      supabase.from("reputation_events").select("*").eq("agent_id", a.id).order("created_at", { ascending: false }).limit(50),
+      supabase.from("nft_mints").select("*").eq("agent_id", a.id).maybeSingle(),
+    ]);
     setEvents((e ?? []) as RepEvent[]);
+    setNft((m ?? null) as NftMint | null);
     setLoading(false);
   }
 
   useEffect(() => { load(); }, [handle]);
+
+  // Generate QR code pointing to this passport URL (or directly to the NFT on Solscan if minted)
+  useEffect(() => {
+    if (typeof window === "undefined" || !agent) return;
+    const url = `${window.location.origin}/agent/${agent.handle}`;
+    QRCode.toDataURL(url, {
+      margin: 1,
+      width: 220,
+      color: { dark: "#22c55e", light: "#00000000" },
+    }).then(setQrDataUrl).catch(() => setQrDataUrl(null));
+  }, [agent]);
 
   async function submitEvent(type: "success" | "failure" | "endorsement" | "abuse") {
     if (!agent || !user) {
