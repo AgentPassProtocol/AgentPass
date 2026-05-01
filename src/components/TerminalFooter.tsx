@@ -12,9 +12,10 @@ export function TerminalFooter() {
           <div>
             <div className="mb-3 uppercase tracking-widest text-foreground">// Protocol</div>
             <ul className="space-y-1.5">
-              <li>/.well-known/agent-passport</li>
-              <li>POST /api/public/v1/verify</li>
+              <li>GET /.well-known/agent-passport</li>
+              <li>POST /api/public/v1/agents</li>
               <li>POST /api/public/v1/event</li>
+              <li>POST /api/public/v1/verify-bundle</li>
             </ul>
           </div>
           <div>
