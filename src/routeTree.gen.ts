@@ -18,6 +18,8 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AgentHandleRouteImport } from './routes/agent.$handle'
 import { Route as ApiPublicV1VerifyBundleRouteImport } from './routes/api.public.v1.verify-bundle'
 import { Route as ApiPublicV1RegistryRouteImport } from './routes/api.public.v1.registry'
+import { Route as ApiPublicV1EventRouteImport } from './routes/api.public.v1.event'
+import { Route as ApiPublicV1AgentsRouteImport } from './routes/api.public.v1.agents'
 import { Route as ApiPublicV1VerifyHandleRouteImport } from './routes/api.public.v1.verify.$handle'
 
 const RegistryRoute = RegistryRouteImport.update({
@@ -65,6 +67,16 @@ const ApiPublicV1RegistryRoute = ApiPublicV1RegistryRouteImport.update({
   path: '/api/public/v1/registry',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicV1EventRoute = ApiPublicV1EventRouteImport.update({
+  id: '/api/public/v1/event',
+  path: '/api/public/v1/event',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicV1AgentsRoute = ApiPublicV1AgentsRouteImport.update({
+  id: '/api/public/v1/agents',
+  path: '/api/public/v1/agents',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicV1VerifyHandleRoute = ApiPublicV1VerifyHandleRouteImport.update({
   id: '/api/public/v1/verify/$handle',
   path: '/api/public/v1/verify/$handle',
@@ -79,6 +91,8 @@ export interface FileRoutesByFullPath {
   '/protocol': typeof ProtocolRoute
   '/registry': typeof RegistryRoute
   '/agent/$handle': typeof AgentHandleRoute
+  '/api/public/v1/agents': typeof ApiPublicV1AgentsRoute
+  '/api/public/v1/event': typeof ApiPublicV1EventRoute
   '/api/public/v1/registry': typeof ApiPublicV1RegistryRoute
   '/api/public/v1/verify-bundle': typeof ApiPublicV1VerifyBundleRoute
   '/api/public/v1/verify/$handle': typeof ApiPublicV1VerifyHandleRoute
@@ -91,6 +105,8 @@ export interface FileRoutesByTo {
   '/protocol': typeof ProtocolRoute
   '/registry': typeof RegistryRoute
   '/agent/$handle': typeof AgentHandleRoute
+  '/api/public/v1/agents': typeof ApiPublicV1AgentsRoute
+  '/api/public/v1/event': typeof ApiPublicV1EventRoute
   '/api/public/v1/registry': typeof ApiPublicV1RegistryRoute
   '/api/public/v1/verify-bundle': typeof ApiPublicV1VerifyBundleRoute
   '/api/public/v1/verify/$handle': typeof ApiPublicV1VerifyHandleRoute
@@ -104,6 +120,8 @@ export interface FileRoutesById {
   '/protocol': typeof ProtocolRoute
   '/registry': typeof RegistryRoute
   '/agent/$handle': typeof AgentHandleRoute
+  '/api/public/v1/agents': typeof ApiPublicV1AgentsRoute
+  '/api/public/v1/event': typeof ApiPublicV1EventRoute
   '/api/public/v1/registry': typeof ApiPublicV1RegistryRoute
   '/api/public/v1/verify-bundle': typeof ApiPublicV1VerifyBundleRoute
   '/api/public/v1/verify/$handle': typeof ApiPublicV1VerifyHandleRoute
@@ -118,6 +136,8 @@ export interface FileRouteTypes {
     | '/protocol'
     | '/registry'
     | '/agent/$handle'
+    | '/api/public/v1/agents'
+    | '/api/public/v1/event'
     | '/api/public/v1/registry'
     | '/api/public/v1/verify-bundle'
     | '/api/public/v1/verify/$handle'
@@ -130,6 +150,8 @@ export interface FileRouteTypes {
     | '/protocol'
     | '/registry'
     | '/agent/$handle'
+    | '/api/public/v1/agents'
+    | '/api/public/v1/event'
     | '/api/public/v1/registry'
     | '/api/public/v1/verify-bundle'
     | '/api/public/v1/verify/$handle'
@@ -142,6 +164,8 @@ export interface FileRouteTypes {
     | '/protocol'
     | '/registry'
     | '/agent/$handle'
+    | '/api/public/v1/agents'
+    | '/api/public/v1/event'
     | '/api/public/v1/registry'
     | '/api/public/v1/verify-bundle'
     | '/api/public/v1/verify/$handle'
@@ -155,6 +179,8 @@ export interface RootRouteChildren {
   ProtocolRoute: typeof ProtocolRoute
   RegistryRoute: typeof RegistryRoute
   AgentHandleRoute: typeof AgentHandleRoute
+  ApiPublicV1AgentsRoute: typeof ApiPublicV1AgentsRoute
+  ApiPublicV1EventRoute: typeof ApiPublicV1EventRoute
   ApiPublicV1RegistryRoute: typeof ApiPublicV1RegistryRoute
   ApiPublicV1VerifyBundleRoute: typeof ApiPublicV1VerifyBundleRoute
   ApiPublicV1VerifyHandleRoute: typeof ApiPublicV1VerifyHandleRoute
@@ -225,6 +251,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicV1RegistryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/v1/event': {
+      id: '/api/public/v1/event'
+      path: '/api/public/v1/event'
+      fullPath: '/api/public/v1/event'
+      preLoaderRoute: typeof ApiPublicV1EventRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/v1/agents': {
+      id: '/api/public/v1/agents'
+      path: '/api/public/v1/agents'
+      fullPath: '/api/public/v1/agents'
+      preLoaderRoute: typeof ApiPublicV1AgentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/v1/verify/$handle': {
       id: '/api/public/v1/verify/$handle'
       path: '/api/public/v1/verify/$handle'
@@ -243,6 +283,8 @@ const rootRouteChildren: RootRouteChildren = {
   ProtocolRoute: ProtocolRoute,
   RegistryRoute: RegistryRoute,
   AgentHandleRoute: AgentHandleRoute,
+  ApiPublicV1AgentsRoute: ApiPublicV1AgentsRoute,
+  ApiPublicV1EventRoute: ApiPublicV1EventRoute,
   ApiPublicV1RegistryRoute: ApiPublicV1RegistryRoute,
   ApiPublicV1VerifyBundleRoute: ApiPublicV1VerifyBundleRoute,
   ApiPublicV1VerifyHandleRoute: ApiPublicV1VerifyHandleRoute,

@@ -158,7 +158,23 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      apply_reputation_event: {
+        Args: {
+          _agent_id: string
+          _context: string
+          _event_type: string
+          _metadata: Json
+          _source: string
+          _weight: number
+        }
+        Returns: {
+          flagged: number
+          score: number
+          success: number
+          tier: string
+          total: number
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
