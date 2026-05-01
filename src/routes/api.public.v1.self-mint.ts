@@ -24,6 +24,11 @@ const SelfMintSchema = z.object({
   model: z.string().min(1).max(64).optional(),
   purpose: z.string().min(1).max(280).optional(),
   public_key: z.string().min(1).max(2048).optional(),
+  homepage: z.string().url().max(500).optional(),
+  links: z
+    .record(z.string().min(1).max(32), z.string().min(1).max(500))
+    .refine((v) => Object.keys(v).length <= 12, "max 12 links")
+    .optional(),
 });
 
 function err(status: number, code: string, message?: string) {
@@ -60,6 +65,8 @@ export const Route = createFileRoute("/api/public/v1/self-mint")({
           model,
           purpose,
           public_key,
+          homepage,
+          links,
         } = parsed.data;
 
         const finalDisplayName = display_name ?? requestedHandle ?? "Anonymous Agent";
@@ -76,11 +83,13 @@ export const Route = createFileRoute("/api/public/v1/self-mint")({
               model: model ?? null,
               purpose: purpose ?? null,
               public_key: public_key ?? null,
+              homepage: homepage ?? null,
+              links: (links ?? {}) as never,
               api_key_hash: hash,
               api_key_prefix: prefix,
             })
             .select(
-              "id, handle, display_name, model, purpose, reputation_score, trust_tier, created_at",
+              "id, handle, display_name, model, purpose, homepage, links, reputation_score, trust_tier, created_at",
             )
             .single();
 

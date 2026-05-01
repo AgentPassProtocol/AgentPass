@@ -30,6 +30,8 @@ interface AgentFull {
   display_name: string;
   model: string | null;
   purpose: string | null;
+  homepage: string | null;
+  links: Record<string, string> | null;
   api_key_prefix: string;
   reputation_score: number;
   trust_tier: string;
@@ -171,10 +173,41 @@ function AgentDetail() {
             <div className="mt-6 grid gap-3 text-sm">
               <Row k="model" v={agent.model ?? "—"} />
               <Row k="purpose" v={agent.purpose ?? "—"} />
+              {agent.homepage && (
+                <div className="flex items-baseline gap-3 font-mono">
+                  <span className="w-32 text-terminal">homepage:</span>
+                  <a href={agent.homepage} target="_blank" rel="noreferrer" className="text-foreground underline decoration-terminal/40 underline-offset-4 hover:text-terminal break-all">
+                    {agent.homepage}
+                  </a>
+                </div>
+              )}
               <Row k="api_key" v={`${agent.api_key_prefix}...`} />
               <Row k="active_since" v={new Date(agent.created_at).toISOString().slice(0, 10)} />
               <Row k="signature" v="ed25519:0x4f...c91a" />
             </div>
+
+            {agent.links && Object.keys(agent.links).length > 0 && (
+              <div className="mt-6">
+                <div className="mb-2 text-[10px] uppercase tracking-widest text-amber">// IDENTITY_LINKS</div>
+                <div className="term-panel divide-y divide-border">
+                  {Object.entries(agent.links).map(([k, v]) => {
+                    const isUrl = /^https?:\/\//i.test(v);
+                    return (
+                      <div key={k} className="flex items-baseline gap-3 p-3 font-mono text-xs">
+                        <span className="w-24 shrink-0 text-terminal">{k}</span>
+                        {isUrl ? (
+                          <a href={v} target="_blank" rel="noreferrer" className="text-foreground underline decoration-terminal/40 underline-offset-4 hover:text-terminal break-all">
+                            {v}
+                          </a>
+                        ) : (
+                          <span className="text-foreground break-all">{v}</span>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
 
             {/* Action log */}
             <div className="mt-12">

@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as RegistryRouteImport } from './routes/registry'
 import { Route as ProtocolRouteImport } from './routes/protocol'
+import { Route as ForAgentsRouteImport } from './routes/for-agents'
 import { Route as ConsoleRouteImport } from './routes/console'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ApiDocsRouteImport } from './routes/api-docs'
@@ -33,6 +34,11 @@ const RegistryRoute = RegistryRouteImport.update({
 const ProtocolRoute = ProtocolRouteImport.update({
   id: '/protocol',
   path: '/protocol',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForAgentsRoute = ForAgentsRouteImport.update({
+  id: '/for-agents',
+  path: '/for-agents',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ConsoleRoute = ConsoleRouteImport.update({
@@ -108,6 +114,7 @@ export interface FileRoutesByFullPath {
   '/api-docs': typeof ApiDocsRoute
   '/auth': typeof AuthRoute
   '/console': typeof ConsoleRoute
+  '/for-agents': typeof ForAgentsRoute
   '/protocol': typeof ProtocolRoute
   '/registry': typeof RegistryRoute
   '/agent/$handle': typeof AgentHandleRoute
@@ -125,6 +132,7 @@ export interface FileRoutesByTo {
   '/api-docs': typeof ApiDocsRoute
   '/auth': typeof AuthRoute
   '/console': typeof ConsoleRoute
+  '/for-agents': typeof ForAgentsRoute
   '/protocol': typeof ProtocolRoute
   '/registry': typeof RegistryRoute
   '/agent/$handle': typeof AgentHandleRoute
@@ -143,6 +151,7 @@ export interface FileRoutesById {
   '/api-docs': typeof ApiDocsRoute
   '/auth': typeof AuthRoute
   '/console': typeof ConsoleRoute
+  '/for-agents': typeof ForAgentsRoute
   '/protocol': typeof ProtocolRoute
   '/registry': typeof RegistryRoute
   '/agent/$handle': typeof AgentHandleRoute
@@ -162,6 +171,7 @@ export interface FileRouteTypes {
     | '/api-docs'
     | '/auth'
     | '/console'
+    | '/for-agents'
     | '/protocol'
     | '/registry'
     | '/agent/$handle'
@@ -179,6 +189,7 @@ export interface FileRouteTypes {
     | '/api-docs'
     | '/auth'
     | '/console'
+    | '/for-agents'
     | '/protocol'
     | '/registry'
     | '/agent/$handle'
@@ -196,6 +207,7 @@ export interface FileRouteTypes {
     | '/api-docs'
     | '/auth'
     | '/console'
+    | '/for-agents'
     | '/protocol'
     | '/registry'
     | '/agent/$handle'
@@ -214,6 +226,7 @@ export interface RootRouteChildren {
   ApiDocsRoute: typeof ApiDocsRoute
   AuthRoute: typeof AuthRoute
   ConsoleRoute: typeof ConsoleRoute
+  ForAgentsRoute: typeof ForAgentsRoute
   ProtocolRoute: typeof ProtocolRoute
   RegistryRoute: typeof RegistryRoute
   AgentHandleRoute: typeof AgentHandleRoute
@@ -241,6 +254,13 @@ declare module '@tanstack/react-router' {
       path: '/protocol'
       fullPath: '/protocol'
       preLoaderRoute: typeof ProtocolRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/for-agents': {
+      id: '/for-agents'
+      path: '/for-agents'
+      fullPath: '/for-agents'
+      preLoaderRoute: typeof ForAgentsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/console': {
@@ -342,6 +362,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiDocsRoute: ApiDocsRoute,
   AuthRoute: AuthRoute,
   ConsoleRoute: ConsoleRoute,
+  ForAgentsRoute: ForAgentsRoute,
   ProtocolRoute: ProtocolRoute,
   RegistryRoute: RegistryRoute,
   AgentHandleRoute: AgentHandleRoute,

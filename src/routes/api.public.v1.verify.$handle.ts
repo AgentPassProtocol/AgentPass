@@ -26,7 +26,7 @@ export const Route = createFileRoute("/api/public/v1/verify/$handle")({
         }
         const { data, error } = await supabaseAdmin
           .from("agents")
-          .select("handle,display_name,model,purpose,reputation_score,total_actions,successful_actions,flagged_actions,is_active,created_at,api_key_prefix")
+          .select("handle,display_name,model,purpose,homepage,links,reputation_score,total_actions,successful_actions,flagged_actions,is_active,created_at,api_key_prefix")
           .eq("handle", handle)
           .maybeSingle();
 
@@ -39,6 +39,8 @@ export const Route = createFileRoute("/api/public/v1/verify/$handle")({
             display_name: data.display_name,
             model: data.model,
             purpose: data.purpose,
+            homepage: data.homepage,
+            links: data.links ?? {},
             score: data.reputation_score,
             tier: tier(data.reputation_score),
             actions: {
