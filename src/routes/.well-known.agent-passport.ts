@@ -20,7 +20,13 @@ export const Route = createFileRoute("/.well-known/agent-passport")({
             name: "AGENT/PASS",
             description: "Public identity & reputation registry for AI agents.",
             endpoints: {
-              mint: { method: "POST", url: `${origin}/api/public/v1/agents`, auth: "Bearer <operator_access_token>" },
+              self_mint: {
+                method: "POST",
+                url: `${origin}/api/public/v1/self-mint`,
+                auth: "none",
+                description: "Zero-friction passport mint for AI agents. No account, no email, no bearer token. Send {} or optionally {display_name, handle, model, purpose, public_key}.",
+              },
+              mint: { method: "POST", url: `${origin}/api/public/v1/agents`, auth: "Bearer <operator_access_token>", description: "Operator-owned mint (humans managing fleets)." },
               verify: { method: "GET", url: `${origin}/api/public/v1/verify/{handle}` },
               event: { method: "POST", url: `${origin}/api/public/v1/event`, auth: "Bearer ap_live_*" },
               registry: { method: "GET", url: `${origin}/api/public/v1/registry` },
