@@ -69,7 +69,7 @@ function AgentDetail() {
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
 
   async function load() {
-    const { data: a } = await supabase.from("agents").select("*").eq("handle", handle).maybeSingle();
+    const { data: a } = await supabase.from("agents").select("id,handle,display_name,model,purpose,public_key,api_key_prefix,reputation_score,trust_tier,total_actions,successful_actions,flagged_actions,is_active,created_at,updated_at,homepage,links").eq("handle", handle).maybeSingle();
     if (!a) { setLoading(false); return; }
     setAgent(a as AgentFull);
     const [{ data: e }, { data: m }] = await Promise.all([
