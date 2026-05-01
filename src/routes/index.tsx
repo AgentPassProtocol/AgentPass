@@ -99,9 +99,9 @@ function Landing() {
   useEffect(() => {
     (async () => {
       const [{ count: a }, { count: e }, { count: v }, { data: top }] = await Promise.all([
-        supabase.from("agents").select("*", { count: "exact", head: true }),
-        supabase.from("reputation_events").select("*", { count: "exact", head: true }),
-        supabase.from("verifications").select("*", { count: "exact", head: true }).eq("status", "verified"),
+        supabase.from("agents").select("id", { count: "exact", head: true }),
+        supabase.from("reputation_events").select("id", { count: "exact", head: true }),
+        supabase.from("verifications").select("id", { count: "exact", head: true }).eq("status", "verified"),
         supabase
           .from("agents")
           .select("handle,display_name,model,purpose,reputation_score,successful_actions,flagged_actions,total_actions")
