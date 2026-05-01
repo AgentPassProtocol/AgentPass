@@ -116,14 +116,20 @@ export async function mintSoulboundPassport(input: MintPassportInput): Promise<M
   const umi = getUmi();
   const asset = generateSigner(umi);
 
+  // mpl-core's create() reads collection.oracles & collection.lifecycleHooks (calls .slice on them).
+  // Passing only { publicKey } throws "Cannot read properties of undefined (reading 'slice')".
+  // Fetch the full CollectionV1 account so those arrays are populated.
+  let collectionAccount: Awaited<ReturnType<typeof fetchCollection>> | undefined;
+  if (input.collectionAddress) {
+    collectionAccount = await fetchCollection(umi, umiPublicKey(input.collectionAddress));
+  }
+
   const builder = createAsset(umi, {
     asset,
     name: `AGENT/PASS · ${input.agentHandle}`,
     uri: input.metadataUri,
     owner: umiPublicKey(input.ownerPublicKey),
-    ...(input.collectionAddress
-      ? { collection: { publicKey: umiPublicKey(input.collectionAddress) } as any }
-      : {}),
+    ...(collectionAccount ? { collection: collectionAccount } : {}),
     plugins: [
       {
         type: "PermanentFreezeDelegate",
