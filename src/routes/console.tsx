@@ -6,12 +6,20 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { generateApiKey, generateHandle, tierForScore } from "@/lib/agent-utils";
 import { exportPassportBundle } from "@/lib/passport-export.functions";
+import { mintAgentPassport } from "@/lib/nft-mint.functions";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/console")({
   component: ConsolePage,
 });
+
+interface NftMint {
+  asset_address: string;
+  tx_signature: string;
+  network: string;
+  owner_address: string;
+}
 
 interface Agent {
   id: string;
@@ -26,6 +34,7 @@ interface Agent {
   successful_actions: number;
   flagged_actions: number;
   created_at: string;
+  nft?: NftMint | null;
 }
 
 function ConsolePage() {
@@ -42,7 +51,28 @@ function ConsolePage() {
   const [purpose, setPurpose] = useState("");
   const [busy, setBusy] = useState(false);
   const [exportingId, setExportingId] = useState<string | null>(null);
+  const [mintingId, setMintingId] = useState<string | null>(null);
   const exportFn = useServerFn(exportPassportBundle);
+  const mintFn = useServerFn(mintAgentPassport);
+
+  async function handleMint(agent: Agent) {
+    setMintingId(agent.id);
+    try {
+      toast.message(`Minting on Solana mainnet…`, { description: "This can take 10–30 seconds." });
+      const res = await mintFn({ data: { agentId: agent.id } });
+      if (res.already) {
+        toast.success(`Already minted · ${agent.handle}`);
+      } else {
+        toast.success(`On-chain ✓ ${res.assetAddress.slice(0, 8)}…`);
+      }
+      await loadAgents();
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Mint failed";
+      toast.error(msg, { duration: 8000 });
+    } finally {
+      setMintingId(null);
+    }
+  }
 
   async function handleExport(agent: Agent) {
     setExportingId(agent.id);
@@ -84,7 +114,16 @@ function ConsolePage() {
       .eq("operator_id", user.id)
       .order("created_at", { ascending: false });
     if (error) toast.error(error.message);
-    setAgents((data ?? []) as Agent[]);
+    const list = (data ?? []) as Agent[];
+    if (list.length > 0) {
+      const { data: mints } = await supabase
+        .from("nft_mints")
+        .select("agent_id, asset_address, tx_signature, network, owner_address")
+        .in("agent_id", list.map((a) => a.id));
+      const byAgent = new Map((mints ?? []).map((m: any) => [m.agent_id, m]));
+      list.forEach((a) => { a.nft = byAgent.get(a.id) ?? null; });
+    }
+    setAgents(list);
     setLoadingAgents(false);
   }
 
@@ -248,10 +287,39 @@ function ConsolePage() {
                     <div className="mt-4 border-t border-border pt-3 text-[10px] text-muted-foreground">
                       key: <span className="text-terminal">{a.api_key_prefix}...</span>
                     </div>
+                    {a.nft ? (
+                      <div className="mt-3 border border-amber/40 bg-amber/5 p-2 text-[10px] font-mono">
+                        <div className="flex items-center justify-between">
+                          <span className="text-amber">◈ ON_CHAIN · {a.nft.network}</span>
+                          <a
+                            href={`https://solscan.io/token/${a.nft.asset_address}${a.nft.network === "devnet" ? "?cluster=devnet" : ""}`}
+                            target="_blank" rel="noreferrer"
+                            className="text-terminal hover:underline"
+                          >SOLSCAN ↗</a>
+                        </div>
+                        <div className="mt-1 break-all text-muted-foreground">
+                          asset: <span className="text-foreground">{a.nft.asset_address.slice(0, 12)}...{a.nft.asset_address.slice(-6)}</span>
+                        </div>
+                        <div className="break-all text-muted-foreground">
+                          owner: <span className="text-foreground">{a.nft.owner_address.slice(0, 12)}...{a.nft.owner_address.slice(-6)}</span>
+                        </div>
+                      </div>
+                    ) : null}
                     <div className="mt-3 flex flex-wrap gap-2">
                       <Link to="/agent/$handle" params={{ handle: a.handle }} className="flex-1 min-w-[80px]">
                         <Button variant="outline" size="sm" className="w-full">VIEW</Button>
                       </Link>
+                      {!a.nft && (
+                        <Button
+                          variant="terminal"
+                          size="sm"
+                          disabled={mintingId === a.id}
+                          onClick={() => handleMint(a)}
+                          title="Mint as soulbound NFT on Solana mainnet"
+                        >
+                          {mintingId === a.id ? "MINTING..." : "◈ MINT_NFT"}
+                        </Button>
+                      )}
                       <Button
                         variant="amber"
                         size="sm"

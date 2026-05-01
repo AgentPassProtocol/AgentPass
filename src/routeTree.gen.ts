@@ -21,6 +21,8 @@ import { Route as ApiPublicV1RegistryRouteImport } from './routes/api.public.v1.
 import { Route as ApiPublicV1EventRouteImport } from './routes/api.public.v1.event'
 import { Route as ApiPublicV1AgentsRouteImport } from './routes/api.public.v1.agents'
 import { Route as ApiPublicV1VerifyHandleRouteImport } from './routes/api.public.v1.verify.$handle'
+import { Route as ApiPublicV1PassportMetadataHandleRouteImport } from './routes/api.public.v1.passport-metadata.$handle'
+import { Route as ApiPublicV1PassportImageHandleRouteImport } from './routes/api.public.v1.passport-image.$handle'
 
 const RegistryRoute = RegistryRouteImport.update({
   id: '/registry',
@@ -82,6 +84,18 @@ const ApiPublicV1VerifyHandleRoute = ApiPublicV1VerifyHandleRouteImport.update({
   path: '/api/public/v1/verify/$handle',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicV1PassportMetadataHandleRoute =
+  ApiPublicV1PassportMetadataHandleRouteImport.update({
+    id: '/api/public/v1/passport-metadata/$handle',
+    path: '/api/public/v1/passport-metadata/$handle',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicV1PassportImageHandleRoute =
+  ApiPublicV1PassportImageHandleRouteImport.update({
+    id: '/api/public/v1/passport-image/$handle',
+    path: '/api/public/v1/passport-image/$handle',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -95,6 +109,8 @@ export interface FileRoutesByFullPath {
   '/api/public/v1/event': typeof ApiPublicV1EventRoute
   '/api/public/v1/registry': typeof ApiPublicV1RegistryRoute
   '/api/public/v1/verify-bundle': typeof ApiPublicV1VerifyBundleRoute
+  '/api/public/v1/passport-image/$handle': typeof ApiPublicV1PassportImageHandleRoute
+  '/api/public/v1/passport-metadata/$handle': typeof ApiPublicV1PassportMetadataHandleRoute
   '/api/public/v1/verify/$handle': typeof ApiPublicV1VerifyHandleRoute
 }
 export interface FileRoutesByTo {
@@ -109,6 +125,8 @@ export interface FileRoutesByTo {
   '/api/public/v1/event': typeof ApiPublicV1EventRoute
   '/api/public/v1/registry': typeof ApiPublicV1RegistryRoute
   '/api/public/v1/verify-bundle': typeof ApiPublicV1VerifyBundleRoute
+  '/api/public/v1/passport-image/$handle': typeof ApiPublicV1PassportImageHandleRoute
+  '/api/public/v1/passport-metadata/$handle': typeof ApiPublicV1PassportMetadataHandleRoute
   '/api/public/v1/verify/$handle': typeof ApiPublicV1VerifyHandleRoute
 }
 export interface FileRoutesById {
@@ -124,6 +142,8 @@ export interface FileRoutesById {
   '/api/public/v1/event': typeof ApiPublicV1EventRoute
   '/api/public/v1/registry': typeof ApiPublicV1RegistryRoute
   '/api/public/v1/verify-bundle': typeof ApiPublicV1VerifyBundleRoute
+  '/api/public/v1/passport-image/$handle': typeof ApiPublicV1PassportImageHandleRoute
+  '/api/public/v1/passport-metadata/$handle': typeof ApiPublicV1PassportMetadataHandleRoute
   '/api/public/v1/verify/$handle': typeof ApiPublicV1VerifyHandleRoute
 }
 export interface FileRouteTypes {
@@ -140,6 +160,8 @@ export interface FileRouteTypes {
     | '/api/public/v1/event'
     | '/api/public/v1/registry'
     | '/api/public/v1/verify-bundle'
+    | '/api/public/v1/passport-image/$handle'
+    | '/api/public/v1/passport-metadata/$handle'
     | '/api/public/v1/verify/$handle'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -154,6 +176,8 @@ export interface FileRouteTypes {
     | '/api/public/v1/event'
     | '/api/public/v1/registry'
     | '/api/public/v1/verify-bundle'
+    | '/api/public/v1/passport-image/$handle'
+    | '/api/public/v1/passport-metadata/$handle'
     | '/api/public/v1/verify/$handle'
   id:
     | '__root__'
@@ -168,6 +192,8 @@ export interface FileRouteTypes {
     | '/api/public/v1/event'
     | '/api/public/v1/registry'
     | '/api/public/v1/verify-bundle'
+    | '/api/public/v1/passport-image/$handle'
+    | '/api/public/v1/passport-metadata/$handle'
     | '/api/public/v1/verify/$handle'
   fileRoutesById: FileRoutesById
 }
@@ -183,6 +209,8 @@ export interface RootRouteChildren {
   ApiPublicV1EventRoute: typeof ApiPublicV1EventRoute
   ApiPublicV1RegistryRoute: typeof ApiPublicV1RegistryRoute
   ApiPublicV1VerifyBundleRoute: typeof ApiPublicV1VerifyBundleRoute
+  ApiPublicV1PassportImageHandleRoute: typeof ApiPublicV1PassportImageHandleRoute
+  ApiPublicV1PassportMetadataHandleRoute: typeof ApiPublicV1PassportMetadataHandleRoute
   ApiPublicV1VerifyHandleRoute: typeof ApiPublicV1VerifyHandleRoute
 }
 
@@ -272,6 +300,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicV1VerifyHandleRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/v1/passport-metadata/$handle': {
+      id: '/api/public/v1/passport-metadata/$handle'
+      path: '/api/public/v1/passport-metadata/$handle'
+      fullPath: '/api/public/v1/passport-metadata/$handle'
+      preLoaderRoute: typeof ApiPublicV1PassportMetadataHandleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/v1/passport-image/$handle': {
+      id: '/api/public/v1/passport-image/$handle'
+      path: '/api/public/v1/passport-image/$handle'
+      fullPath: '/api/public/v1/passport-image/$handle'
+      preLoaderRoute: typeof ApiPublicV1PassportImageHandleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -287,17 +329,11 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicV1EventRoute: ApiPublicV1EventRoute,
   ApiPublicV1RegistryRoute: ApiPublicV1RegistryRoute,
   ApiPublicV1VerifyBundleRoute: ApiPublicV1VerifyBundleRoute,
+  ApiPublicV1PassportImageHandleRoute: ApiPublicV1PassportImageHandleRoute,
+  ApiPublicV1PassportMetadataHandleRoute:
+    ApiPublicV1PassportMetadataHandleRoute,
   ApiPublicV1VerifyHandleRoute: ApiPublicV1VerifyHandleRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}

@@ -1,5 +1,6 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import QRCode from "qrcode";
 import { TerminalHeader } from "@/components/TerminalHeader";
 import { TerminalFooter } from "@/components/TerminalFooter";
 import { supabase } from "@/integrations/supabase/client";
@@ -47,6 +48,14 @@ interface RepEvent {
   created_at: string;
 }
 
+interface NftMint {
+  asset_address: string;
+  tx_signature: string;
+  network: string;
+  owner_address: string;
+  metadata_uri: string;
+}
+
 function AgentDetail() {
   const { handle } = Route.useParams();
   const { user } = useAuth();
@@ -54,22 +63,34 @@ function AgentDetail() {
   const [events, setEvents] = useState<RepEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [nft, setNft] = useState<NftMint | null>(null);
+  const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
 
   async function load() {
     const { data: a } = await supabase.from("agents").select("*").eq("handle", handle).maybeSingle();
     if (!a) { setLoading(false); return; }
     setAgent(a as AgentFull);
-    const { data: e } = await supabase
-      .from("reputation_events")
-      .select("*")
-      .eq("agent_id", a.id)
-      .order("created_at", { ascending: false })
-      .limit(50);
+    const [{ data: e }, { data: m }] = await Promise.all([
+      supabase.from("reputation_events").select("*").eq("agent_id", a.id).order("created_at", { ascending: false }).limit(50),
+      supabase.from("nft_mints").select("*").eq("agent_id", a.id).maybeSingle(),
+    ]);
     setEvents((e ?? []) as RepEvent[]);
+    setNft((m ?? null) as NftMint | null);
     setLoading(false);
   }
 
   useEffect(() => { load(); }, [handle]);
+
+  // Generate QR code pointing to this passport URL (or directly to the NFT on Solscan if minted)
+  useEffect(() => {
+    if (typeof window === "undefined" || !agent) return;
+    const url = `${window.location.origin}/agent/${agent.handle}`;
+    QRCode.toDataURL(url, {
+      margin: 1,
+      width: 220,
+      color: { dark: "#22c55e", light: "#00000000" },
+    }).then(setQrDataUrl).catch(() => setQrDataUrl(null));
+  }, [agent]);
 
   async function submitEvent(type: "success" | "failure" | "endorsement" | "abuse") {
     if (!agent || !user) {
@@ -221,6 +242,49 @@ function AgentDetail() {
                   </Button>
                 </div>
               )}
+            </div>
+
+
+            {/* On-chain panel */}
+            <div className="term-panel p-6">
+              <div className="mb-3 text-[10px] uppercase tracking-widest text-amber">// ON_CHAIN_ANCHOR</div>
+              {nft ? (
+                <>
+                  <div className="text-[10px] uppercase tracking-widest text-terminal">◈ MINTED · {nft.network}</div>
+                  <div className="mt-2 text-[10px] font-mono text-muted-foreground">asset</div>
+                  <div className="break-all font-mono text-[11px] text-foreground">{nft.asset_address}</div>
+                  <div className="mt-2 text-[10px] font-mono text-muted-foreground">owner (agent wallet)</div>
+                  <div className="break-all font-mono text-[11px] text-foreground">{nft.owner_address}</div>
+                  <div className="mt-3 flex gap-2">
+                    <a href={`https://solscan.io/token/${nft.asset_address}${nft.network === "devnet" ? "?cluster=devnet" : ""}`} target="_blank" rel="noreferrer" className="flex-1">
+                      <Button variant="terminal" size="sm" className="w-full">SOLSCAN ↗</Button>
+                    </a>
+                    <a href={nft.metadata_uri} target="_blank" rel="noreferrer" className="flex-1">
+                      <Button variant="outline" size="sm" className="w-full">METADATA</Button>
+                    </a>
+                  </div>
+                  <div className="mt-3 text-[10px] text-muted-foreground">
+                    soulbound · non-transferable · permanent identity anchor
+                  </div>
+                </>
+              ) : (
+                <div className="text-[11px] text-muted-foreground">
+                  Not yet anchored on-chain. The operator can mint a soulbound passport NFT from the console.
+                </div>
+              )}
+            </div>
+
+            {/* QR code linking to this passport */}
+            <div className="term-panel flex flex-col items-center p-6">
+              <div className="mb-3 self-start text-[10px] uppercase tracking-widest text-amber">// SCAN_TO_VERIFY</div>
+              {qrDataUrl ? (
+                <img src={qrDataUrl} alt={`QR code for ${agent.handle}`} className="h-[180px] w-[180px]" />
+              ) : (
+                <div className="h-[180px] w-[180px] border border-border" />
+              )}
+              <div className="mt-3 break-all text-center text-[10px] font-mono text-muted-foreground">
+                /agent/{agent.handle}
+              </div>
             </div>
 
             <div className="term-panel p-6 text-[11px]">

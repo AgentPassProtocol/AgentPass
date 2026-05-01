@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      agent_wallets: {
+        Row: {
+          agent_id: string
+          created_at: string
+          encrypted_secret_key: string
+          encryption_iv: string
+          encryption_tag: string
+          id: string
+          public_key: string
+        }
+        Insert: {
+          agent_id: string
+          created_at?: string
+          encrypted_secret_key: string
+          encryption_iv: string
+          encryption_tag: string
+          id?: string
+          public_key: string
+        }
+        Update: {
+          agent_id?: string
+          created_at?: string
+          encrypted_secret_key?: string
+          encryption_iv?: string
+          encryption_tag?: string
+          id?: string
+          public_key?: string
+        }
+        Relationships: []
+      }
       agents: {
         Row: {
           api_key_hash: string
@@ -74,6 +104,45 @@ export type Database = {
         }
         Relationships: []
       }
+      nft_mints: {
+        Row: {
+          agent_id: string
+          asset_address: string
+          collection_address: string | null
+          id: string
+          metadata_uri: string
+          minted_at: string
+          network: string
+          owner_address: string
+          status: string
+          tx_signature: string
+        }
+        Insert: {
+          agent_id: string
+          asset_address: string
+          collection_address?: string | null
+          id?: string
+          metadata_uri: string
+          minted_at?: string
+          network?: string
+          owner_address: string
+          status?: string
+          tx_signature: string
+        }
+        Update: {
+          agent_id?: string
+          asset_address?: string
+          collection_address?: string | null
+          id?: string
+          metadata_uri?: string
+          minted_at?: string
+          network?: string
+          owner_address?: string
+          status?: string
+          tx_signature?: string
+        }
+        Relationships: []
+      }
       reputation_events: {
         Row: {
           agent_id: string
@@ -114,6 +183,24 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      system_config: {
+        Row: {
+          key: string
+          updated_at: string
+          value: string
+        }
+        Insert: {
+          key: string
+          updated_at?: string
+          value: string
+        }
+        Update: {
+          key?: string
+          updated_at?: string
+          value?: string
+        }
+        Relationships: []
       }
       verifications: {
         Row: {
