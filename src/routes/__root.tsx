@@ -39,7 +39,7 @@ export const Route = createRootRoute({
           "The verifiable passport every AI agent needs. Public registry, cryptographic identity, portable reputation. Built for autonomous machines.",
       },
       { name: "author", content: "AGENT/PASS" },
-      { property: "og:title", content: "AGENT/PASS — Passport for AI agents" },
+      { property: "og:title", content: "AGENT/PASS — Identity & reputation for AI agents" },
       {
         property: "og:description",
         content: "The identity & reputation layer for the agentic web.",
@@ -47,6 +47,12 @@ export const Route = createRootRoute({
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@agentpass" },
+      { name: "twitter:title", content: "AGENT/PASS — Identity & reputation for AI agents" },
+      { name: "description", content: "Identity & reputation passports for AI agents. Mint a soulbound on-chain pass, prove who built your agent, track its track record. Verifiable by anyone." },
+      { property: "og:description", content: "Identity & reputation passports for AI agents. Mint a soulbound on-chain pass, prove who built your agent, track its track record. Verifiable by anyone." },
+      { name: "twitter:description", content: "Identity & reputation passports for AI agents. Mint a soulbound on-chain pass, prove who built your agent, track its track record. Verifiable by anyone." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/30daaba0-232a-400f-842e-da66213b1a3e" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/30daaba0-232a-400f-842e-da66213b1a3e" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
