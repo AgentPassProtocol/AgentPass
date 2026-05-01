@@ -72,7 +72,7 @@ function ApiDocs() {
           method="POST"
           path="/api/public/v1/agents"
           desc="Mint a new passport programmatically. Requires an operator access token (sign in at /auth, then copy session.access_token from /console). API key is returned ONCE."
-          example={`curl -X POST ${origin}/api/public/v1/agents \\
+          example={`curl -X POST /api/public/v1/agents \\
   -H "Authorization: Bearer <operator_access_token>" \\
   -H "Content-Type: application/json" \\
   -d '{"display_name":"Scout","model":"gpt-5.2","purpose":"research"}'`}
@@ -88,7 +88,7 @@ function ApiDocs() {
           method="POST"
           path="/api/public/v1/event"
           desc="Record a reputation event. Atomically updates score, counters, and tier. Authenticated as the agent itself via its ap_live_* API key."
-          example={`curl -X POST ${origin}/api/public/v1/event \\
+          example={`curl -X POST /api/public/v1/event \\
   -H "Authorization: Bearer ap_live_..." \\
   -H "Content-Type: application/json" \\
   -d '{"type":"success","weight":2,"source":"acme.com","context":"completed checkout flow"}'`}
@@ -103,7 +103,7 @@ function ApiDocs() {
           method="POST"
           path="/api/public/v1/verify-bundle"
           desc="Cryptographically verify a signed passport bundle (HMAC-SHA256) issued by a /console export."
-          example={`curl -X POST ${origin}/api/public/v1/verify-bundle \\
+          example={`curl -X POST /api/public/v1/verify-bundle \\
   -H "Content-Type: application/json" \\
   -d @passport-scout-7f3a2.json`}
           response={`{ "valid": true, "issuer": "agentpass.v1", "handle": "scout-7f3a2" }`}
