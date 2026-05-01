@@ -51,50 +51,67 @@ export const Route = createFileRoute("/")({
   component: Landing,
 });
 
-const BOOT_LINES = [
-  "[init] booting agentpass.runtime v0.1.0-alpha",
-  "[net]  connecting to registry mesh ............ OK",
-  "[crypto] loading ed25519 verification keys .... OK",
-  "[idx]  agents indexed: 12,847                   OK",
-  "[rep]  reputation events processed: 1.2M        OK",
-  "[ok]   ready. awaiting agent.",
-];
+function buildBootLines(stats: { agents: number; events: number }) {
+  return [
+    "[init] booting agentpass.runtime v0.1.0-alpha",
+    "[net]  connecting to registry mesh ............ OK",
+    "[crypto] loading ed25519 verification keys .... OK",
+    `[idx]  agents indexed: ${stats.agents.toLocaleString().padEnd(24, " ")}OK`,
+    `[rep]  reputation events processed: ${stats.events.toLocaleString().padEnd(13, " ")}OK`,
+    "[ok]   ready. awaiting agent.",
+  ];
+}
 
-function BootSequence() {
+function BootSequence({ stats }: { stats: { agents: number; events: number } }) {
+  const lines = buildBootLines(stats);
   const [shown, setShown] = useState(0);
   useEffect(() => {
     const t = setInterval(() => {
-      setShown((s) => (s < BOOT_LINES.length ? s + 1 : s));
+      setShown((s) => (s < lines.length ? s + 1 : s));
     }, 180);
     return () => clearInterval(t);
-  }, []);
+  }, [lines.length]);
   return (
     <div className="font-mono text-[11px] leading-relaxed text-terminal-dim sm:text-xs">
-      {BOOT_LINES.slice(0, shown).map((line) => (
+      {lines.slice(0, shown).map((line) => (
         <div key={line} className={line.includes("OK") ? "text-terminal" : ""}>
           {line}
         </div>
       ))}
-      {shown >= BOOT_LINES.length && <div className="cursor-blink text-terminal" />}
+      {shown >= lines.length && <div className="cursor-blink text-terminal" />}
     </div>
   );
 }
 
 function Landing() {
   const [stats, setStats] = useState({ agents: 0, events: 0, verified: 0 });
+  const [topAgent, setTopAgent] = useState<{
+    handle: string;
+    display_name: string;
+    model: string | null;
+    purpose: string | null;
+    reputation_score: number;
+    successful_actions: number;
+    flagged_actions: number;
+    total_actions: number;
+  } | null>(null);
 
   useEffect(() => {
     (async () => {
-      const [{ count: a }, { count: e }, { count: v }] = await Promise.all([
+      const [{ count: a }, { count: e }, { count: v }, { data: top }] = await Promise.all([
         supabase.from("agents").select("*", { count: "exact", head: true }),
         supabase.from("reputation_events").select("*", { count: "exact", head: true }),
         supabase.from("verifications").select("*", { count: "exact", head: true }).eq("status", "verified"),
+        supabase
+          .from("agents")
+          .select("handle,display_name,model,purpose,reputation_score,successful_actions,flagged_actions,total_actions")
+          .eq("is_active", true)
+          .order("reputation_score", { ascending: false })
+          .limit(1)
+          .maybeSingle(),
       ]);
-      setStats({
-        agents: (a ?? 0) + 12847,
-        events: (e ?? 0) + 1_204_512,
-        verified: (v ?? 0) + 4327,
-      });
+      setStats({ agents: a ?? 0, events: e ?? 0, verified: v ?? 0 });
+      if (top) setTopAgent(top);
     })();
   }, []);
 
@@ -112,8 +129,6 @@ function Landing() {
               <span>events: {stats.events.toLocaleString()}</span>
               <span>verified: {stats.verified.toLocaleString()}</span>
               <span><span className="text-amber">●</span> protocol: v0.1.0-alpha</span>
-              <span>uptime: 99.97%</span>
-              <span>last_signed_block: 0xA9F3C7E1</span>
               <span><span className="text-terminal">●</span> verify: online</span>
             </div>
           ))}
@@ -181,60 +196,71 @@ function Landing() {
                     <span className="h-2.5 w-2.5 bg-terminal"></span>
                   </div>
                   <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-                    passport.json — agentpass://scout-7f3a2
+                    {topAgent ? `passport.json — agentpass://${topAgent.handle}` : "passport.json — registry empty"}
                   </span>
-                  <span className="font-mono text-[10px] text-terminal">●REC</span>
+                  <span className="font-mono text-[10px] text-terminal">●LIVE</span>
                 </div>
 
                 <div className="p-5 font-mono text-xs">
-                  <BootSequence />
+                  <BootSequence stats={stats} />
                   <div className="mt-5 border-t border-dashed border-border pt-4">
-                    <div className="text-[10px] uppercase tracking-widest text-muted-foreground">// AGENT PASSPORT</div>
-                    <div className="mt-2 flex items-baseline gap-3">
-                      <span className="text-terminal">handle:</span>
-                      <span className="font-bold text-foreground term-glow">scout-7f3a2</span>
+                    <div className="text-[10px] uppercase tracking-widest text-muted-foreground">
+                      // {topAgent ? "TOP AGENT (LIVE)" : "AWAITING FIRST AGENT"}
                     </div>
-                    <div className="mt-1 flex items-baseline gap-3">
-                      <span className="text-terminal">model:</span>
-                      <span className="text-foreground">gpt-5.2</span>
-                    </div>
-                    <div className="mt-1 flex items-baseline gap-3">
-                      <span className="text-terminal">purpose:</span>
-                      <span className="text-foreground">research_assistant</span>
-                    </div>
+                    {topAgent ? (
+                      <>
+                        <div className="mt-2 flex items-baseline gap-3">
+                          <span className="text-terminal">handle:</span>
+                          <span className="font-bold text-foreground term-glow">{topAgent.handle}</span>
+                        </div>
+                        <div className="mt-1 flex items-baseline gap-3">
+                          <span className="text-terminal">model:</span>
+                          <span className="text-foreground">{topAgent.model ?? "unspecified"}</span>
+                        </div>
+                        <div className="mt-1 flex items-baseline gap-3">
+                          <span className="text-terminal">purpose:</span>
+                          <span className="text-foreground truncate">{topAgent.purpose ?? "—"}</span>
+                        </div>
 
-                    <div className="mt-4 border border-border bg-background/60 p-3">
-                      <div className="flex items-baseline justify-between">
-                        <span className="text-[10px] uppercase tracking-widest text-muted-foreground">REPUTATION</span>
-                        <span className={`text-[10px] uppercase tracking-widest ${tierForScore(847).color}`}>
-                          {tierForScore(847).tier}
-                        </span>
-                      </div>
-                      <div className="mt-2 flex items-baseline gap-2">
-                        <span className="text-3xl font-extrabold text-terminal term-glow">847</span>
-                        <span className="text-xs text-muted-foreground">/ 1000</span>
-                      </div>
-                      <div className="mt-2 h-1.5 w-full bg-border">
-                        <div className="h-full bg-terminal" style={{ width: "84.7%" }}></div>
-                      </div>
-                      <div className="mt-3 grid grid-cols-3 gap-2 text-[10px] uppercase tracking-widest">
-                        <div><span className="text-terminal">12,481</span><br /><span className="text-muted-foreground">success</span></div>
-                        <div><span className="text-amber">147</span><br /><span className="text-muted-foreground">flagged</span></div>
-                        <div><span className="text-cyan">94.2%</span><br /><span className="text-muted-foreground">trust</span></div>
-                      </div>
-                    </div>
+                        <div className="mt-4 border border-border bg-background/60 p-3">
+                          <div className="flex items-baseline justify-between">
+                            <span className="text-[10px] uppercase tracking-widest text-muted-foreground">REPUTATION</span>
+                            <span className={`text-[10px] uppercase tracking-widest ${tierForScore(topAgent.reputation_score).color}`}>
+                              {tierForScore(topAgent.reputation_score).tier}
+                            </span>
+                          </div>
+                          <div className="mt-2 flex items-baseline gap-2">
+                            <span className="text-3xl font-extrabold text-terminal term-glow">{topAgent.reputation_score}</span>
+                            <span className="text-xs text-muted-foreground">/ 1000</span>
+                          </div>
+                          <div className="mt-2 h-1.5 w-full bg-border">
+                            <div
+                              className="h-full bg-terminal"
+                              style={{ width: `${Math.min(100, (topAgent.reputation_score / 1000) * 100)}%` }}
+                            ></div>
+                          </div>
+                          <div className="mt-3 grid grid-cols-3 gap-2 text-[10px] uppercase tracking-widest">
+                            <div><span className="text-terminal">{topAgent.successful_actions.toLocaleString()}</span><br /><span className="text-muted-foreground">success</span></div>
+                            <div><span className="text-amber">{topAgent.flagged_actions.toLocaleString()}</span><br /><span className="text-muted-foreground">flagged</span></div>
+                            <div>
+                              <span className="text-cyan">
+                                {topAgent.total_actions > 0
+                                  ? `${((topAgent.successful_actions / topAgent.total_actions) * 100).toFixed(1)}%`
+                                  : "—"}
+                              </span><br /><span className="text-muted-foreground">trust</span>
+                            </div>
+                          </div>
+                        </div>
 
-                    <div className="mt-3 flex flex-wrap gap-1.5">
-                      {["domain:✓", "github:✓", "cap:web", "cap:read", "since:2025"].map((b) => (
-                        <span key={b} className="border border-terminal/40 bg-terminal/5 px-1.5 py-0.5 text-[10px] text-terminal">
-                          {b}
-                        </span>
-                      ))}
-                    </div>
-
-                    <div className="mt-4 text-[10px] text-muted-foreground">
-                      sig: <span className="text-terminal">ed25519:0x4f...c91a</span>
-                    </div>
+                        <div className="mt-4 text-[10px] text-muted-foreground">
+                          verify → <span className="text-terminal">/api/public/v1/verify/{topAgent.handle}</span>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="mt-3 text-[11px] text-muted-foreground">
+                        No agents minted yet. Be the first — <Link to="/auth" className="text-terminal hover:underline">mint a passport</Link>.
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
