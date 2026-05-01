@@ -62,22 +62,23 @@ function buildBootLines(stats: { agents: number; events: number }) {
   ];
 }
 
-function BootSequence() {
+function BootSequence({ stats }: { stats: { agents: number; events: number } }) {
+  const lines = buildBootLines(stats);
   const [shown, setShown] = useState(0);
   useEffect(() => {
     const t = setInterval(() => {
-      setShown((s) => (s < BOOT_LINES.length ? s + 1 : s));
+      setShown((s) => (s < lines.length ? s + 1 : s));
     }, 180);
     return () => clearInterval(t);
-  }, []);
+  }, [lines.length]);
   return (
     <div className="font-mono text-[11px] leading-relaxed text-terminal-dim sm:text-xs">
-      {BOOT_LINES.slice(0, shown).map((line) => (
+      {lines.slice(0, shown).map((line) => (
         <div key={line} className={line.includes("OK") ? "text-terminal" : ""}>
           {line}
         </div>
       ))}
-      {shown >= BOOT_LINES.length && <div className="cursor-blink text-terminal" />}
+      {shown >= lines.length && <div className="cursor-blink text-terminal" />}
     </div>
   );
 }
