@@ -9,8 +9,10 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as RegistryRouteImport } from './routes/registry'
 import { Route as ProtocolRouteImport } from './routes/protocol'
+import { Route as LlmsDottxtRouteImport } from './routes/llms[.]txt'
 import { Route as ForAgentsRouteImport } from './routes/for-agents'
 import { Route as ConsoleRouteImport } from './routes/console'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -26,6 +28,11 @@ import { Route as ApiPublicV1VerifyHandleRouteImport } from './routes/api.public
 import { Route as ApiPublicV1PassportMetadataHandleRouteImport } from './routes/api.public.v1.passport-metadata.$handle'
 import { Route as ApiPublicV1PassportImageHandleRouteImport } from './routes/api.public.v1.passport-image.$handle'
 
+const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
+  id: '/robots.txt',
+  path: '/robots.txt',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RegistryRoute = RegistryRouteImport.update({
   id: '/registry',
   path: '/registry',
@@ -34,6 +41,11 @@ const RegistryRoute = RegistryRouteImport.update({
 const ProtocolRoute = ProtocolRouteImport.update({
   id: '/protocol',
   path: '/protocol',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LlmsDottxtRoute = LlmsDottxtRouteImport.update({
+  id: '/llms.txt',
+  path: '/llms.txt',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ForAgentsRoute = ForAgentsRouteImport.update({
@@ -115,8 +127,10 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/console': typeof ConsoleRoute
   '/for-agents': typeof ForAgentsRoute
+  '/llms.txt': typeof LlmsDottxtRoute
   '/protocol': typeof ProtocolRoute
   '/registry': typeof RegistryRoute
+  '/robots.txt': typeof RobotsDottxtRoute
   '/agent/$handle': typeof AgentHandleRoute
   '/api/public/v1/agents': typeof ApiPublicV1AgentsRoute
   '/api/public/v1/event': typeof ApiPublicV1EventRoute
@@ -133,8 +147,10 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/console': typeof ConsoleRoute
   '/for-agents': typeof ForAgentsRoute
+  '/llms.txt': typeof LlmsDottxtRoute
   '/protocol': typeof ProtocolRoute
   '/registry': typeof RegistryRoute
+  '/robots.txt': typeof RobotsDottxtRoute
   '/agent/$handle': typeof AgentHandleRoute
   '/api/public/v1/agents': typeof ApiPublicV1AgentsRoute
   '/api/public/v1/event': typeof ApiPublicV1EventRoute
@@ -152,8 +168,10 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/console': typeof ConsoleRoute
   '/for-agents': typeof ForAgentsRoute
+  '/llms.txt': typeof LlmsDottxtRoute
   '/protocol': typeof ProtocolRoute
   '/registry': typeof RegistryRoute
+  '/robots.txt': typeof RobotsDottxtRoute
   '/agent/$handle': typeof AgentHandleRoute
   '/api/public/v1/agents': typeof ApiPublicV1AgentsRoute
   '/api/public/v1/event': typeof ApiPublicV1EventRoute
@@ -172,8 +190,10 @@ export interface FileRouteTypes {
     | '/auth'
     | '/console'
     | '/for-agents'
+    | '/llms.txt'
     | '/protocol'
     | '/registry'
+    | '/robots.txt'
     | '/agent/$handle'
     | '/api/public/v1/agents'
     | '/api/public/v1/event'
@@ -190,8 +210,10 @@ export interface FileRouteTypes {
     | '/auth'
     | '/console'
     | '/for-agents'
+    | '/llms.txt'
     | '/protocol'
     | '/registry'
+    | '/robots.txt'
     | '/agent/$handle'
     | '/api/public/v1/agents'
     | '/api/public/v1/event'
@@ -208,8 +230,10 @@ export interface FileRouteTypes {
     | '/auth'
     | '/console'
     | '/for-agents'
+    | '/llms.txt'
     | '/protocol'
     | '/registry'
+    | '/robots.txt'
     | '/agent/$handle'
     | '/api/public/v1/agents'
     | '/api/public/v1/event'
@@ -227,8 +251,10 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   ConsoleRoute: typeof ConsoleRoute
   ForAgentsRoute: typeof ForAgentsRoute
+  LlmsDottxtRoute: typeof LlmsDottxtRoute
   ProtocolRoute: typeof ProtocolRoute
   RegistryRoute: typeof RegistryRoute
+  RobotsDottxtRoute: typeof RobotsDottxtRoute
   AgentHandleRoute: typeof AgentHandleRoute
   ApiPublicV1AgentsRoute: typeof ApiPublicV1AgentsRoute
   ApiPublicV1EventRoute: typeof ApiPublicV1EventRoute
@@ -242,6 +268,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/robots.txt': {
+      id: '/robots.txt'
+      path: '/robots.txt'
+      fullPath: '/robots.txt'
+      preLoaderRoute: typeof RobotsDottxtRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/registry': {
       id: '/registry'
       path: '/registry'
@@ -254,6 +287,13 @@ declare module '@tanstack/react-router' {
       path: '/protocol'
       fullPath: '/protocol'
       preLoaderRoute: typeof ProtocolRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/llms.txt': {
+      id: '/llms.txt'
+      path: '/llms.txt'
+      fullPath: '/llms.txt'
+      preLoaderRoute: typeof LlmsDottxtRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/for-agents': {
@@ -363,8 +403,10 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   ConsoleRoute: ConsoleRoute,
   ForAgentsRoute: ForAgentsRoute,
+  LlmsDottxtRoute: LlmsDottxtRoute,
   ProtocolRoute: ProtocolRoute,
   RegistryRoute: RegistryRoute,
+  RobotsDottxtRoute: RobotsDottxtRoute,
   AgentHandleRoute: AgentHandleRoute,
   ApiPublicV1AgentsRoute: ApiPublicV1AgentsRoute,
   ApiPublicV1EventRoute: ApiPublicV1EventRoute,
