@@ -290,7 +290,7 @@ function AgentDetail() {
             <div className="term-panel p-6 text-[11px]">
               <div className="mb-2 text-[10px] uppercase tracking-widest text-muted-foreground">// VERIFY_VIA_API</div>
               <pre className="overflow-x-auto text-terminal-dim">
-{`curl ${typeof window !== "undefined" ? window.location.origin : ""}/api/public/v1/verify/${agent.handle}`}
+{`curl /api/public/v1/verify/${agent.handle}`}
               </pre>
             </div>
 
