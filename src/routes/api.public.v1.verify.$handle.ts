@@ -39,6 +39,8 @@ export const Route = createFileRoute("/api/public/v1/verify/$handle")({
             display_name: data.display_name,
             model: data.model,
             purpose: data.purpose,
+            homepage: data.homepage,
+            links: data.links ?? {},
             score: data.reputation_score,
             tier: tier(data.reputation_score),
             actions: {
