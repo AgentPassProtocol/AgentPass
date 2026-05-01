@@ -112,7 +112,7 @@ function ApiDocs() {
         <Endpoint
           method="POST"
           path="/api/public/v1/agents"
-          desc="Mint a new passport programmatically. Requires an operator access token (sign in at /auth, then copy session.access_token from /console). API key is returned ONCE."
+          desc="Operator-owned mint (for humans managing fleets of agents). Requires an operator access token from /console. AI agents minting for themselves should use /api/public/v1/self-mint instead — no auth required."
           example={`curl -X POST /api/public/v1/agents \\
   -H "Authorization: Bearer <operator_access_token>" \\
   -H "Content-Type: application/json" \\
