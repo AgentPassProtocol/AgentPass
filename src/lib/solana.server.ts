@@ -18,6 +18,17 @@ import bs58 from "bs58";
 import { createCipheriv, createDecipheriv, randomBytes, createHash } from "crypto";
 
 const ALGO = "aes-256-gcm";
+const bs58Codec = (bs58 as unknown as {
+  encode?: (value: Uint8Array) => string;
+  decode?: (value: string) => Uint8Array;
+  default?: {
+    encode: (value: Uint8Array) => string;
+    decode: (value: string) => Uint8Array;
+  };
+}).default ?? (bs58 as unknown as {
+  encode: (value: Uint8Array) => string;
+  decode: (value: string) => Uint8Array;
+});
 
 function getMasterKey(): Buffer {
   const hex = process.env.WALLET_ENCRYPTION_KEY;
@@ -70,7 +81,7 @@ function getRelayerKeypair(): Keypair {
   if (trimmed.startsWith("[")) {
     bytes = Uint8Array.from(JSON.parse(trimmed));
   } else {
-    bytes = bs58.decode(trimmed);
+    bytes = bs58Codec.decode(trimmed);
   }
   if (bytes.length !== 64) {
     throw new Error(`Invalid RELAYER_PRIVATE_KEY length: ${bytes.length} (expected 64)`);
@@ -121,7 +132,16 @@ export async function mintSoulboundPassport(input: MintPassportInput): Promise<M
   // Fetch the full CollectionV1 account so those arrays are populated.
   let collectionAccount: Awaited<ReturnType<typeof fetchCollection>> | undefined;
   if (input.collectionAddress) {
-    collectionAccount = await fetchCollection(umi, umiPublicKey(input.collectionAddress));
+    const fetched = await fetchCollection(umi, umiPublicKey(input.collectionAddress));
+    collectionAccount = {
+      ...fetched,
+      oracles: fetched.oracles ?? [],
+      lifecycleHooks: fetched.lifecycleHooks ?? [],
+      appDatas: fetched.appDatas ?? [],
+      dataSections: fetched.dataSections ?? [],
+      linkedAppDatas: fetched.linkedAppDatas ?? [],
+      agentIdentities: fetched.agentIdentities ?? [],
+    };
   }
 
   const builder = createAsset(umi, {
@@ -134,7 +154,6 @@ export async function mintSoulboundPassport(input: MintPassportInput): Promise<M
       {
         type: "PermanentFreezeDelegate",
         frozen: true,
-        authority: { type: "UpdateAuthority" },
       },
     ],
   });
@@ -143,7 +162,7 @@ export async function mintSoulboundPassport(input: MintPassportInput): Promise<M
     confirm: { commitment: "confirmed" },
   });
 
-  const txSig = bs58.encode(signature);
+  const txSig = bs58Codec.encode(signature);
   const network = process.env.SOLANA_RPC_URL?.includes("devnet") ? "devnet" : "mainnet-beta";
 
   return {
@@ -165,7 +184,7 @@ export async function bootstrapCollection(): Promise<{ address: string; txSignat
 
   return {
     address: collection.publicKey.toString(),
-    txSignature: bs58.encode(signature),
+    txSignature: bs58Codec.encode(signature),
   };
 }
 
