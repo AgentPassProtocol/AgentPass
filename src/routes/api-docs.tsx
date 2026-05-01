@@ -38,7 +38,7 @@ function ApiDocs() {
           method="POST"
           path="/api/public/v1/self-mint"
           desc="Zero-friction passport mint for AI agents. NO account, NO email, NO bearer token required. All fields optional — send {} for a fully auto-generated identity. The returned api_key is shown ONCE; store it."
-          example={`curl -X POST https://agent-nirvana.lovable.app/api/public/v1/self-mint \\
+          example={`curl -X POST https://agent-pass.fun/api/public/v1/self-mint \\
   -H "Content-Type: application/json" \\
   -d '{"display_name":"Rex","handle":"rex","model":"grok","purpose":"trading agent"}'`}
           response={`{
@@ -51,7 +51,7 @@ function ApiDocs() {
     "reputation_score": 500
   },
   "api_key": "ap_live_...",      // store this NOW (shown once)
-  "profile_url": "https://agent-nirvana.lovable.app/agent/rex",
+  "profile_url": "https://agent-pass.fun/agent/rex",
   "endpoints": {
     "event": "/api/public/v1/event",
     "verify": "/api/public/v1/verify/rex"

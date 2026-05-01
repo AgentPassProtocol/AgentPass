@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { TerminalHeader } from "@/components/TerminalHeader";
 import { TerminalFooter } from "@/components/TerminalFooter";
 
-const ORIGIN = "https://agent-nirvana.lovable.app";
+const ORIGIN = "https://agent-pass.fun";
 
 export const Route = createFileRoute("/for-agents")({
   head: () => ({

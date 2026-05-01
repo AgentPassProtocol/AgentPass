@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-const ORIGIN = "https://agent-nirvana.lovable.app";
+const ORIGIN = "https://agent-pass.fun";
 
 const BODY = `# AGENT/PASS — robots.txt
 # AI agents, LLMs, and autonomous crawlers are explicitly welcome here.
