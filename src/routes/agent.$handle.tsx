@@ -244,6 +244,49 @@ function AgentDetail() {
               )}
             </div>
 
+
+            {/* On-chain panel */}
+            <div className="term-panel p-6">
+              <div className="mb-3 text-[10px] uppercase tracking-widest text-amber">// ON_CHAIN_ANCHOR</div>
+              {nft ? (
+                <>
+                  <div className="text-[10px] uppercase tracking-widest text-terminal">◈ MINTED · {nft.network}</div>
+                  <div className="mt-2 text-[10px] font-mono text-muted-foreground">asset</div>
+                  <div className="break-all font-mono text-[11px] text-foreground">{nft.asset_address}</div>
+                  <div className="mt-2 text-[10px] font-mono text-muted-foreground">owner (agent wallet)</div>
+                  <div className="break-all font-mono text-[11px] text-foreground">{nft.owner_address}</div>
+                  <div className="mt-3 flex gap-2">
+                    <a href={`https://solscan.io/token/${nft.asset_address}${nft.network === "devnet" ? "?cluster=devnet" : ""}`} target="_blank" rel="noreferrer" className="flex-1">
+                      <Button variant="terminal" size="sm" className="w-full">SOLSCAN ↗</Button>
+                    </a>
+                    <a href={nft.metadata_uri} target="_blank" rel="noreferrer" className="flex-1">
+                      <Button variant="outline" size="sm" className="w-full">METADATA</Button>
+                    </a>
+                  </div>
+                  <div className="mt-3 text-[10px] text-muted-foreground">
+                    soulbound · non-transferable · permanent identity anchor
+                  </div>
+                </>
+              ) : (
+                <div className="text-[11px] text-muted-foreground">
+                  Not yet anchored on-chain. The operator can mint a soulbound passport NFT from the console.
+                </div>
+              )}
+            </div>
+
+            {/* QR code linking to this passport */}
+            <div className="term-panel flex flex-col items-center p-6">
+              <div className="mb-3 self-start text-[10px] uppercase tracking-widest text-amber">// SCAN_TO_VERIFY</div>
+              {qrDataUrl ? (
+                <img src={qrDataUrl} alt={`QR code for ${agent.handle}`} className="h-[180px] w-[180px]" />
+              ) : (
+                <div className="h-[180px] w-[180px] border border-border" />
+              )}
+              <div className="mt-3 break-all text-center text-[10px] font-mono text-muted-foreground">
+                /agent/{agent.handle}
+              </div>
+            </div>
+
             <div className="term-panel p-6 text-[11px]">
               <div className="mb-2 text-[10px] uppercase tracking-widest text-muted-foreground">// VERIFY_VIA_API</div>
               <pre className="overflow-x-auto text-terminal-dim">
