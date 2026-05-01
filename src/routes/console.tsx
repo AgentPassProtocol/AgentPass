@@ -6,12 +6,20 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { generateApiKey, generateHandle, tierForScore } from "@/lib/agent-utils";
 import { exportPassportBundle } from "@/lib/passport-export.functions";
+import { mintAgentPassport } from "@/lib/nft-mint.functions";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/console")({
   component: ConsolePage,
 });
+
+interface NftMint {
+  asset_address: string;
+  tx_signature: string;
+  network: string;
+  owner_address: string;
+}
 
 interface Agent {
   id: string;
@@ -26,6 +34,7 @@ interface Agent {
   successful_actions: number;
   flagged_actions: number;
   created_at: string;
+  nft?: NftMint | null;
 }
 
 function ConsolePage() {
@@ -42,7 +51,28 @@ function ConsolePage() {
   const [purpose, setPurpose] = useState("");
   const [busy, setBusy] = useState(false);
   const [exportingId, setExportingId] = useState<string | null>(null);
+  const [mintingId, setMintingId] = useState<string | null>(null);
   const exportFn = useServerFn(exportPassportBundle);
+  const mintFn = useServerFn(mintAgentPassport);
+
+  async function handleMint(agent: Agent) {
+    setMintingId(agent.id);
+    try {
+      toast.message(`Minting on Solana mainnet…`, { description: "This can take 10–30 seconds." });
+      const res = await mintFn({ data: { agentId: agent.id } });
+      if (res.already) {
+        toast.success(`Already minted · ${agent.handle}`);
+      } else {
+        toast.success(`On-chain ✓ ${res.assetAddress.slice(0, 8)}…`);
+      }
+      await loadAgents();
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Mint failed";
+      toast.error(msg, { duration: 8000 });
+    } finally {
+      setMintingId(null);
+    }
+  }
 
   async function handleExport(agent: Agent) {
     setExportingId(agent.id);
