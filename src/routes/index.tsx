@@ -129,8 +129,6 @@ function Landing() {
               <span>events: {stats.events.toLocaleString()}</span>
               <span>verified: {stats.verified.toLocaleString()}</span>
               <span><span className="text-amber">●</span> protocol: v0.1.0-alpha</span>
-              <span>uptime: 99.97%</span>
-              <span>last_signed_block: 0xA9F3C7E1</span>
               <span><span className="text-terminal">●</span> verify: online</span>
             </div>
           ))}
