@@ -17,6 +17,7 @@ import { Route as ApiDocsRouteImport } from './routes/api-docs'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AgentHandleRouteImport } from './routes/agent.$handle'
 import { Route as ApiPublicV1VerifyBundleRouteImport } from './routes/api.public.v1.verify-bundle'
+import { Route as ApiPublicV1SelfMintRouteImport } from './routes/api.public.v1.self-mint'
 import { Route as ApiPublicV1RegistryRouteImport } from './routes/api.public.v1.registry'
 import { Route as ApiPublicV1EventRouteImport } from './routes/api.public.v1.event'
 import { Route as ApiPublicV1AgentsRouteImport } from './routes/api.public.v1.agents'
@@ -64,6 +65,11 @@ const ApiPublicV1VerifyBundleRoute = ApiPublicV1VerifyBundleRouteImport.update({
   path: '/api/public/v1/verify-bundle',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicV1SelfMintRoute = ApiPublicV1SelfMintRouteImport.update({
+  id: '/api/public/v1/self-mint',
+  path: '/api/public/v1/self-mint',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicV1RegistryRoute = ApiPublicV1RegistryRouteImport.update({
   id: '/api/public/v1/registry',
   path: '/api/public/v1/registry',
@@ -108,6 +114,7 @@ export interface FileRoutesByFullPath {
   '/api/public/v1/agents': typeof ApiPublicV1AgentsRoute
   '/api/public/v1/event': typeof ApiPublicV1EventRoute
   '/api/public/v1/registry': typeof ApiPublicV1RegistryRoute
+  '/api/public/v1/self-mint': typeof ApiPublicV1SelfMintRoute
   '/api/public/v1/verify-bundle': typeof ApiPublicV1VerifyBundleRoute
   '/api/public/v1/passport-image/$handle': typeof ApiPublicV1PassportImageHandleRoute
   '/api/public/v1/passport-metadata/$handle': typeof ApiPublicV1PassportMetadataHandleRoute
@@ -124,6 +131,7 @@ export interface FileRoutesByTo {
   '/api/public/v1/agents': typeof ApiPublicV1AgentsRoute
   '/api/public/v1/event': typeof ApiPublicV1EventRoute
   '/api/public/v1/registry': typeof ApiPublicV1RegistryRoute
+  '/api/public/v1/self-mint': typeof ApiPublicV1SelfMintRoute
   '/api/public/v1/verify-bundle': typeof ApiPublicV1VerifyBundleRoute
   '/api/public/v1/passport-image/$handle': typeof ApiPublicV1PassportImageHandleRoute
   '/api/public/v1/passport-metadata/$handle': typeof ApiPublicV1PassportMetadataHandleRoute
@@ -141,6 +149,7 @@ export interface FileRoutesById {
   '/api/public/v1/agents': typeof ApiPublicV1AgentsRoute
   '/api/public/v1/event': typeof ApiPublicV1EventRoute
   '/api/public/v1/registry': typeof ApiPublicV1RegistryRoute
+  '/api/public/v1/self-mint': typeof ApiPublicV1SelfMintRoute
   '/api/public/v1/verify-bundle': typeof ApiPublicV1VerifyBundleRoute
   '/api/public/v1/passport-image/$handle': typeof ApiPublicV1PassportImageHandleRoute
   '/api/public/v1/passport-metadata/$handle': typeof ApiPublicV1PassportMetadataHandleRoute
@@ -159,6 +168,7 @@ export interface FileRouteTypes {
     | '/api/public/v1/agents'
     | '/api/public/v1/event'
     | '/api/public/v1/registry'
+    | '/api/public/v1/self-mint'
     | '/api/public/v1/verify-bundle'
     | '/api/public/v1/passport-image/$handle'
     | '/api/public/v1/passport-metadata/$handle'
@@ -175,6 +185,7 @@ export interface FileRouteTypes {
     | '/api/public/v1/agents'
     | '/api/public/v1/event'
     | '/api/public/v1/registry'
+    | '/api/public/v1/self-mint'
     | '/api/public/v1/verify-bundle'
     | '/api/public/v1/passport-image/$handle'
     | '/api/public/v1/passport-metadata/$handle'
@@ -191,6 +202,7 @@ export interface FileRouteTypes {
     | '/api/public/v1/agents'
     | '/api/public/v1/event'
     | '/api/public/v1/registry'
+    | '/api/public/v1/self-mint'
     | '/api/public/v1/verify-bundle'
     | '/api/public/v1/passport-image/$handle'
     | '/api/public/v1/passport-metadata/$handle'
@@ -208,6 +220,7 @@ export interface RootRouteChildren {
   ApiPublicV1AgentsRoute: typeof ApiPublicV1AgentsRoute
   ApiPublicV1EventRoute: typeof ApiPublicV1EventRoute
   ApiPublicV1RegistryRoute: typeof ApiPublicV1RegistryRoute
+  ApiPublicV1SelfMintRoute: typeof ApiPublicV1SelfMintRoute
   ApiPublicV1VerifyBundleRoute: typeof ApiPublicV1VerifyBundleRoute
   ApiPublicV1PassportImageHandleRoute: typeof ApiPublicV1PassportImageHandleRoute
   ApiPublicV1PassportMetadataHandleRoute: typeof ApiPublicV1PassportMetadataHandleRoute
@@ -272,6 +285,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicV1VerifyBundleRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/v1/self-mint': {
+      id: '/api/public/v1/self-mint'
+      path: '/api/public/v1/self-mint'
+      fullPath: '/api/public/v1/self-mint'
+      preLoaderRoute: typeof ApiPublicV1SelfMintRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/v1/registry': {
       id: '/api/public/v1/registry'
       path: '/api/public/v1/registry'
@@ -328,6 +348,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicV1AgentsRoute: ApiPublicV1AgentsRoute,
   ApiPublicV1EventRoute: ApiPublicV1EventRoute,
   ApiPublicV1RegistryRoute: ApiPublicV1RegistryRoute,
+  ApiPublicV1SelfMintRoute: ApiPublicV1SelfMintRoute,
   ApiPublicV1VerifyBundleRoute: ApiPublicV1VerifyBundleRoute,
   ApiPublicV1PassportImageHandleRoute: ApiPublicV1PassportImageHandleRoute,
   ApiPublicV1PassportMetadataHandleRoute:
