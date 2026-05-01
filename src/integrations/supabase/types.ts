@@ -188,13 +188,6 @@ export type Database = {
             referencedRelation: "agents"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "reputation_events_agent_id_fkey"
-            columns: ["agent_id"]
-            isOneToOne: false
-            referencedRelation: "agents_public"
-            referencedColumns: ["id"]
-          },
         ]
       }
       system_config: {
@@ -251,77 +244,11 @@ export type Database = {
             referencedRelation: "agents"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "verifications_agent_id_fkey"
-            columns: ["agent_id"]
-            isOneToOne: false
-            referencedRelation: "agents_public"
-            referencedColumns: ["id"]
-          },
         ]
       }
     }
     Views: {
-      agents_public: {
-        Row: {
-          api_key_prefix: string | null
-          created_at: string | null
-          display_name: string | null
-          flagged_actions: number | null
-          handle: string | null
-          homepage: string | null
-          id: string | null
-          is_active: boolean | null
-          links: Json | null
-          model: string | null
-          public_key: string | null
-          purpose: string | null
-          reputation_score: number | null
-          successful_actions: number | null
-          total_actions: number | null
-          trust_tier: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          api_key_prefix?: string | null
-          created_at?: string | null
-          display_name?: string | null
-          flagged_actions?: number | null
-          handle?: string | null
-          homepage?: string | null
-          id?: string | null
-          is_active?: boolean | null
-          links?: Json | null
-          model?: string | null
-          public_key?: string | null
-          purpose?: string | null
-          reputation_score?: number | null
-          successful_actions?: number | null
-          total_actions?: number | null
-          trust_tier?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          api_key_prefix?: string | null
-          created_at?: string | null
-          display_name?: string | null
-          flagged_actions?: number | null
-          handle?: string | null
-          homepage?: string | null
-          id?: string | null
-          is_active?: boolean | null
-          links?: Json | null
-          model?: string | null
-          public_key?: string | null
-          purpose?: string | null
-          reputation_score?: number | null
-          successful_actions?: number | null
-          total_actions?: number | null
-          trust_tier?: string | null
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
       apply_reputation_event: {
