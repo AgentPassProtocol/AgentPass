@@ -68,9 +68,9 @@ export const Route = createFileRoute("/api/public/v1/event")({
             _agent_id: agent.id,
             _event_type: parsed.data.type,
             _weight: parsed.data.weight ?? 1,
-            _source: parsed.data.source ?? null,
-            _context: parsed.data.context ?? null,
-            _metadata: (parsed.data.metadata ?? {}) as Record<string, unknown>,
+            _source: (parsed.data.source ?? "") as string,
+            _context: (parsed.data.context ?? "") as string,
+            _metadata: (parsed.data.metadata ?? {}) as unknown as never,
           },
         );
 
