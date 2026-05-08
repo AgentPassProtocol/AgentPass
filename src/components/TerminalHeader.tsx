@@ -44,6 +44,13 @@ export function TerminalHeader() {
             ./for_agents
           </Link>
           <Link
+            to="/integrations"
+            className="hidden px-3 py-2 uppercase tracking-wider text-muted-foreground transition-colors hover:text-terminal md:inline-block"
+            activeProps={{ className: "text-terminal" }}
+          >
+            ./integrations
+          </Link>
+          <Link
             to="/api-docs"
             className="hidden px-3 py-2 uppercase tracking-wider text-muted-foreground transition-colors hover:text-terminal sm:inline-block"
             activeProps={{ className: "text-terminal" }}
