@@ -14,11 +14,13 @@ import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as RegistryRouteImport } from './routes/registry'
 import { Route as ProtocolRouteImport } from './routes/protocol'
 import { Route as LlmsDottxtRouteImport } from './routes/llms[.]txt'
+import { Route as IntegrationsRouteImport } from './routes/integrations'
 import { Route as ForAgentsRouteImport } from './routes/for-agents'
 import { Route as ConsoleRouteImport } from './routes/console'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ApiDocsRouteImport } from './routes/api-docs'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiMcpRouteImport } from './routes/api.mcp'
 import { Route as AgentHandleRouteImport } from './routes/agent.$handle'
 import { Route as ApiPublicV1VerifyBundleRouteImport } from './routes/api.public.v1.verify-bundle'
 import { Route as ApiPublicV1SelfMintRouteImport } from './routes/api.public.v1.self-mint'
@@ -54,6 +56,11 @@ const LlmsDottxtRoute = LlmsDottxtRouteImport.update({
   path: '/llms.txt',
   getParentRoute: () => rootRouteImport,
 } as any)
+const IntegrationsRoute = IntegrationsRouteImport.update({
+  id: '/integrations',
+  path: '/integrations',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ForAgentsRoute = ForAgentsRouteImport.update({
   id: '/for-agents',
   path: '/for-agents',
@@ -77,6 +84,11 @@ const ApiDocsRoute = ApiDocsRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiMcpRoute = ApiMcpRouteImport.update({
+  id: '/api/mcp',
+  path: '/api/mcp',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AgentHandleRoute = AgentHandleRouteImport.update({
@@ -133,12 +145,14 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/console': typeof ConsoleRoute
   '/for-agents': typeof ForAgentsRoute
+  '/integrations': typeof IntegrationsRoute
   '/llms.txt': typeof LlmsDottxtRoute
   '/protocol': typeof ProtocolRoute
   '/registry': typeof RegistryRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/agent/$handle': typeof AgentHandleRoute
+  '/api/mcp': typeof ApiMcpRoute
   '/api/public/v1/agents': typeof ApiPublicV1AgentsRoute
   '/api/public/v1/event': typeof ApiPublicV1EventRoute
   '/api/public/v1/registry': typeof ApiPublicV1RegistryRoute
@@ -154,12 +168,14 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/console': typeof ConsoleRoute
   '/for-agents': typeof ForAgentsRoute
+  '/integrations': typeof IntegrationsRoute
   '/llms.txt': typeof LlmsDottxtRoute
   '/protocol': typeof ProtocolRoute
   '/registry': typeof RegistryRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/agent/$handle': typeof AgentHandleRoute
+  '/api/mcp': typeof ApiMcpRoute
   '/api/public/v1/agents': typeof ApiPublicV1AgentsRoute
   '/api/public/v1/event': typeof ApiPublicV1EventRoute
   '/api/public/v1/registry': typeof ApiPublicV1RegistryRoute
@@ -176,12 +192,14 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/console': typeof ConsoleRoute
   '/for-agents': typeof ForAgentsRoute
+  '/integrations': typeof IntegrationsRoute
   '/llms.txt': typeof LlmsDottxtRoute
   '/protocol': typeof ProtocolRoute
   '/registry': typeof RegistryRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/agent/$handle': typeof AgentHandleRoute
+  '/api/mcp': typeof ApiMcpRoute
   '/api/public/v1/agents': typeof ApiPublicV1AgentsRoute
   '/api/public/v1/event': typeof ApiPublicV1EventRoute
   '/api/public/v1/registry': typeof ApiPublicV1RegistryRoute
@@ -199,12 +217,14 @@ export interface FileRouteTypes {
     | '/auth'
     | '/console'
     | '/for-agents'
+    | '/integrations'
     | '/llms.txt'
     | '/protocol'
     | '/registry'
     | '/robots.txt'
     | '/sitemap.xml'
     | '/agent/$handle'
+    | '/api/mcp'
     | '/api/public/v1/agents'
     | '/api/public/v1/event'
     | '/api/public/v1/registry'
@@ -220,12 +240,14 @@ export interface FileRouteTypes {
     | '/auth'
     | '/console'
     | '/for-agents'
+    | '/integrations'
     | '/llms.txt'
     | '/protocol'
     | '/registry'
     | '/robots.txt'
     | '/sitemap.xml'
     | '/agent/$handle'
+    | '/api/mcp'
     | '/api/public/v1/agents'
     | '/api/public/v1/event'
     | '/api/public/v1/registry'
@@ -241,12 +263,14 @@ export interface FileRouteTypes {
     | '/auth'
     | '/console'
     | '/for-agents'
+    | '/integrations'
     | '/llms.txt'
     | '/protocol'
     | '/registry'
     | '/robots.txt'
     | '/sitemap.xml'
     | '/agent/$handle'
+    | '/api/mcp'
     | '/api/public/v1/agents'
     | '/api/public/v1/event'
     | '/api/public/v1/registry'
@@ -263,12 +287,14 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   ConsoleRoute: typeof ConsoleRoute
   ForAgentsRoute: typeof ForAgentsRoute
+  IntegrationsRoute: typeof IntegrationsRoute
   LlmsDottxtRoute: typeof LlmsDottxtRoute
   ProtocolRoute: typeof ProtocolRoute
   RegistryRoute: typeof RegistryRoute
   RobotsDottxtRoute: typeof RobotsDottxtRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   AgentHandleRoute: typeof AgentHandleRoute
+  ApiMcpRoute: typeof ApiMcpRoute
   ApiPublicV1AgentsRoute: typeof ApiPublicV1AgentsRoute
   ApiPublicV1EventRoute: typeof ApiPublicV1EventRoute
   ApiPublicV1RegistryRoute: typeof ApiPublicV1RegistryRoute
@@ -316,6 +342,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LlmsDottxtRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/integrations': {
+      id: '/integrations'
+      path: '/integrations'
+      fullPath: '/integrations'
+      preLoaderRoute: typeof IntegrationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/for-agents': {
       id: '/for-agents'
       path: '/for-agents'
@@ -349,6 +382,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/mcp': {
+      id: '/api/mcp'
+      path: '/api/mcp'
+      fullPath: '/api/mcp'
+      preLoaderRoute: typeof ApiMcpRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/agent/$handle': {
@@ -423,12 +463,14 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   ConsoleRoute: ConsoleRoute,
   ForAgentsRoute: ForAgentsRoute,
+  IntegrationsRoute: IntegrationsRoute,
   LlmsDottxtRoute: LlmsDottxtRoute,
   ProtocolRoute: ProtocolRoute,
   RegistryRoute: RegistryRoute,
   RobotsDottxtRoute: RobotsDottxtRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   AgentHandleRoute: AgentHandleRoute,
+  ApiMcpRoute: ApiMcpRoute,
   ApiPublicV1AgentsRoute: ApiPublicV1AgentsRoute,
   ApiPublicV1EventRoute: ApiPublicV1EventRoute,
   ApiPublicV1RegistryRoute: ApiPublicV1RegistryRoute,
@@ -442,12 +484,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}
